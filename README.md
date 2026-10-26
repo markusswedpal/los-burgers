@@ -6,7 +6,7 @@ A 3D mobile arcade game. Catch falling burgers through four seasons, skip the bu
 - Sven the baby shows up now and then and doubles your coins.
 - Three lives, and the game speeds up fast. Burnt burgers cost a life.
 - 13 skins in the shop, including four Mythic skins that cost 2,500 to 10,000 coins.
-- Top 20 leaderboard: add your player name after a run. Scores are stored on the device (`localStorage`); `lbLoad`-style storage is isolated in a few functions so a shared server can replace it later.
+- Top 20 leaderboard: add your player name after a run. Scores are stored on the device (`localStorage`). The storage code sits in a few small functions in `index.html`, so a shared server can replace it later.
 - Built with [three.js](https://threejs.org/) in a single `index.html`. No build step.
 
 ## Play on iPhone
