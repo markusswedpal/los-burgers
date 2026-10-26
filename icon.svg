@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f0f55"/><stop offset=".42" stop-color="#6d2a96"/>
+      <stop offset=".76" stop-color="#ff5f8f"/><stop offset="1" stop-color="#ffb36b"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#fff3a8" stop-opacity=".7"/><stop offset="1" stop-color="#fff3a8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff3a8"/><stop offset=".35" stop-color="#ffd23f"/><stop offset="1" stop-color="#e29b00"/>
+    </linearGradient>
+    <linearGradient id="cream" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#ffe9c9"/>
+    </linearGradient>
+    <path id="L" d="M176 262H322V640H440V790H176Z"/>
+    <path id="O" fill-rule="evenodd" d="M525 526a165 262 0 1 0 330 0a165 262 0 1 0 -330 0ZM592 526a98 165 0 1 0 196 0a98 165 0 1 0 -196 0Z"/>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <circle cx="512" cy="760" r="520" fill="url(#glow)"/>
+  <path d="M0 860C130 800 250 820 360 850C470 880 590 800 720 820C840 838 930 870 1024 840V1024H0Z" fill="#3a1a78"/>
+  <path d="M0 920C150 880 300 920 450 930C600 940 800 880 1024 920V1024H0Z" fill="#2d1670"/>
+  <g stroke-linejoin="round" stroke-linecap="round" transform="translate(-18 -20) skewX(-7) translate(60 0)">
+    <g stroke="#14082f" stroke-width="40" fill="#14082f" transform="translate(0 56)"><use href="#L"/><use href="#O"/></g>
+    <g stroke="#ff4f8b" stroke-width="40" fill="#ff4f8b" transform="translate(0 34)"><use href="#L"/></g>
+    <g stroke="#c98f00" stroke-width="40" fill="#c98f00" transform="translate(0 34)"><use href="#O"/></g>
+    <g stroke="#14082f" stroke-width="40" fill="#14082f"><use href="#L"/><use href="#O"/></g>
+    <g stroke="url(#cream)" stroke-width="22" fill="url(#cream)"><use href="#L"/></g>
+    <g stroke="url(#gold)" stroke-width="22" fill="url(#gold)"><use href="#O"/></g>
+    <path d="M228 300V560" stroke="#fff" stroke-width="16" opacity=".65" fill="none"/>
+    <path d="M572 470C582 392 626 336 690 322" stroke="#fff" stroke-width="16" opacity=".7" fill="none"/>
+  </g>
+  <path d="M884 190L898 232L940 246L898 260L884 302L870 260L828 246L870 232Z" fill="#fff6e3"/>
+  <path d="M150 150L158 174L182 182L158 190L150 214L142 190L118 182L142 174Z" fill="#fff6e3" opacity=".85"/>
+</svg>
