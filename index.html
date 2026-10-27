@@ -455,6 +455,7 @@ var SKINS=[
   {id:'stig',name:'Stig',rarity:'epic',price:650,body:'#3f7cff',accent:'#0d1f5a',eye:'#e8f4ff',acc:'cap+headphones',c2:'#ff7a2e'},
   {id:'elsi',name:'Elsi',rarity:'epic',price:650,body:'#ff8fd0',accent:'#5a2a00',eye:'#fff0fa',acc:'hair+ponytail+bow',c2:'#8a3dff'},
   {id:'lise',name:'Lise',rarity:'epic',price:650,body:'#b58cff',accent:'#3a1a00',eye:'#fffbe0',acc:'hair+pigtails+bow',c2:'#ffe14a'},
+  {id:'ejlert',name:'Ejlert',rarity:'epic',price:650,body:'#3fd6b0',accent:'#5a3210',eye:'#f0fffb',acc:'hair+spikes',c2:'#ffb02e'},
   {id:'copsven',name:'Officer Sven',kind:'baby',rarity:'legendary',price:1800}
 ];
 function byId(id){for(var i=0;i<SKINS.length;i++)if(SKINS[i].id===id)return SKINS[i];return SKINS[0]}
@@ -949,6 +950,13 @@ function buildHero(sk){
   }
   if(has('hair')){
     head.add(new T.Mesh(new T.SphereGeometry(1.05,32,14,0,TAU,0,Math.PI*.3),gear));
+  }
+  if(has('spikes')){
+    var spk2=[[0,.05],[.5,.3],[-.5,.3],[.9,.1],[-.9,.1],[.35,-.45],[-.35,-.45],[0,-.65]];
+    for(i=0;i<spk2.length;i++){
+      var sxp=spk2[i][0],szp=spk2[i][1],syp=Math.sqrt(Math.max(.05,1-sxp*sxp-szp*szp)),sc2=new T.Mesh(new T.ConeGeometry(.17,.55,6),gear);
+      sc2.position.set(sxp*1.08,syp*1.08,szp*1.08);sc2.lookAt(sxp*3,syp*3,szp*3);sc2.rotateX(Math.PI/2);head.add(sc2);
+    }
   }
   if(has('cap')){
     head.add(new T.Mesh(new T.SphereGeometry(1.07,32,14,0,TAU,0,Math.PI*.36),trim));
