@@ -282,11 +282,18 @@ button:focus-visible{outline:3px solid var(--cool);outline-offset:3px}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 
 .best.ev{margin-top:4px;font-size:.8rem;opacity:.9}
-.best.ev.on{color:var(--coin);opacity:1;font-weight:600;animation:evpulse 1.6s ease-in-out infinite}
-@keyframes evpulse{50%{text-shadow:0 0 14px rgba(255,210,63,.9)}}
+.best.ev.on{color:#ff9a2a;opacity:1;font-weight:600;animation:evpulse 1.6s ease-in-out infinite}
+@keyframes evpulse{50%{text-shadow:0 0 14px rgba(255,140,30,.95)}}
+#spider{position:absolute;left:0;top:0;width:0;height:0;z-index:6;pointer-events:none;will-change:transform}
+#spider svg{position:absolute;left:-36px;top:-36px;width:72px;height:72px;overflow:visible;filter:drop-shadow(0 3px 3px rgba(0,0,0,.5))}
+#spider .lg{transform-origin:0 0;animation:legw .26s ease-in-out infinite alternate}
+#spider .lg.b{animation-delay:-.13s;animation-direction:alternate-reverse}
+#spider.still .lg{animation-play-state:paused}
+@keyframes legw{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}
 @media (prefers-reduced-motion:reduce){
   .btn,.heart,#toast,.buy,#banner{transition:none}
   .buy.nope,.baby-tag.warn{animation:none}
+  #spider{display:none}
 }
 </style>
 <style>
@@ -305,6 +312,10 @@ body{position:fixed;inset:0;width:100%;touch-action:manipulation;-webkit-touch-c
   <div id="frost"></div>
   <div id="flash"></div>
   <div id="pops"></div>
+  <div id="spider" hidden aria-hidden="true"><svg viewBox="-36 -36 72 72"><g id="spLegs"></g>
+    <ellipse cx="0" cy="9" rx="9" ry="12" fill="#14101c"/><path d="M0 3l3 6-3 6-3-6z" fill="#ff7a12"/>
+    <circle cx="0" cy="-8" r="6.5" fill="#1d1728"/><circle cx="-2.6" cy="-10" r="1.8" fill="#fff"/><circle cx="2.6" cy="-10" r="1.8" fill="#fff"/>
+    <circle cx="-2.6" cy="-10.3" r=".8" fill="#14101c"/><circle cx="2.6" cy="-10.3" r=".8" fill="#14101c"/></svg></div>
 
   <div id="hud" class="gut" hidden>
     <div class="hud-row">
@@ -499,11 +510,11 @@ var SEASONS=[
    dir:'#dfeaff',dirI:.9,rim:'#8ac8ff',rimI:.65,mount:'#c3d2e8',foliage:'#f4f9ff',trunk:'#3a2a22',cloud:'#dfe6f0',sun:'#e6f0ff',sunY:17,sunS:.75,
    pColor:'#ffffff',pFall:3.4,pSway:.8,pSize:.2,pAlpha:.95,fogNear:36,fogFar:170,laneRough:.08,foliageScale:.78,cold:1,
    w:8.5,zeta:.45,fall:1.2,wind:1.8,catchM:.88,coin:1.5},
-  {name:'Golden Hour',temp:29,color:'#ffd23f',note:'Beach party! Shiny gold burgers, coins x2. Blue and pink burgers pay extra.',
-   skyTop:'#1f8fe8',skyBot:'#ffc27a',fog:'#ffd9a0',ground:'#f2d49b',lane:'#ffe7b0',hemiSky:'#fff0cf',hemiGnd:'#d9a85a',hemiI:.95,
-   dir:'#ffcf8a',dirI:1.2,rim:'#ff9a5a',rimI:.6,mount:'#25b5c9',foliage:'#3fc46a',trunk:'#7a5230',cloud:'#ffe6c4',sun:'#ffb347',sunY:12,sunS:1.9,
-   pColor:'#fff0a8',pFall:-.45,pSway:.8,pSize:.15,pAlpha:.8,fogNear:70,fogFar:280,laneRough:.55,foliageScale:1.1,cold:0,
-   w:17,zeta:1,fall:.92,wind:.3,catchM:1.08,coin:2}
+  {name:'Halloween',temp:9,color:'#ff8a1a',note:'Pumpkin night! Orange burgers and a spooky spider. Purple and green burgers pay extra. Coins x2.',
+   skyTop:'#150a2e',skyBot:'#ff7a1a',fog:'#ff8a3a',ground:'#3d2240',lane:'#4a2a55',hemiSky:'#ff9a5a',hemiGnd:'#3a2048',hemiI:.85,
+   dir:'#ffa24a',dirI:1.05,rim:'#a04aff',rimI:.7,mount:'#5a2a6a',foliage:'#ff8a1a',trunk:'#1a0f14',cloud:'#8a3a6a',sun:'#ffb347',sunY:20,sunS:2.4,
+   pColor:'#ff8a1a',pFall:.9,pSway:1.2,pSize:.2,pAlpha:.85,fogNear:42,fogFar:190,laneRough:.6,foliageScale:1,cold:0,
+   w:17,zeta:1,fall:.95,wind:.4,catchM:1.05,coin:2}
 ];
 var COLS=['skyTop','skyBot','fog','ground','lane','hemiSky','hemiGnd','dir','rim','mount','foliage','trunk','cloud','sun','pColor'];
 var NUMS=['hemiI','dirI','rimI','sunY','sunS','pFall','pSway','pSize','pAlpha','fogNear','fogFar','laneRough','foliageScale','cold','w','zeta','fall','wind','catchM','coin'];
@@ -514,7 +525,7 @@ function mkEnv(d){
   return e;
 }
 var ENV=SEASONS.map(mkEnv);
-/* Golden Hour: every day 19:00-19:59 on the player's clock */
+/* Halloween Hour: every day 19:00-19:59 on the player's clock */
 function eventOn(){return new Date().getHours()===19}
 function eventIn(){
   var n=new Date(),t0=new Date(n.getFullYear(),n.getMonth(),n.getDate(),19,0,0);
@@ -672,6 +683,23 @@ var edgeMat=new T.MeshBasicMaterial({color:'#35e0ff'});
 var eF=new T.Mesh(new T.BoxGeometry(14.1,.12,.16),edgeMat);eF.position.set(0,.06,5.17);scene.add(eF);
 var eL=new T.Mesh(new T.BoxGeometry(.16,.12,9.5),edgeMat);eL.position.set(-6.97,.06,.4);scene.add(eL);
 var eR=eL.clone();eR.position.x=6.97;scene.add(eR);
+
+/* halloween pumpkins: only shown during the 19:00 hour */
+var pumpkins=new T.Group();pumpkins.visible=false;scene.add(pumpkins);
+var pumpFace=new T.MeshBasicMaterial({color:'#ffe066'});
+(function(){
+  var body=new T.SphereGeometry(1,14,10),stem=new T.CylinderGeometry(.09,.16,.45,6),
+      eyeG=new T.ConeGeometry(.2,.3,3),mouthG=new T.BoxGeometry(.9,.12,.05),
+      om=std('#ff7a12',.35,.1,{emissive:'#a03a00',emissiveIntensity:.5,flatShading:true}),sm=std('#3f7a1f',.8,0);
+  var spots=[[-7.8,2.6,.8],[7.9,3.2,1],[-8.6,-.4,1.2],[8.9,-.8,.9],[-7.6,-3.2,.9],[7.8,-3.6,1.15],[-11,1.2,1.5],[11.4,.6,1.4],[-12.5,-4,1.9],[13,-5,1.7],[-5.5,-7,1.3],[5,-8,1.5],[-1.5,-10,1.1],[2.4,-6.5,.8]];
+  for(var i=0;i<spots.length;i++){
+    var sp=spots[i],g=new T.Group(),m=new T.Mesh(body,om);m.scale.set(1,.82,1);g.add(m);
+    var st=new T.Mesh(stem,sm);st.position.y=.88;st.rotation.z=.2;g.add(st);
+    for(var k=-1;k<=1;k+=2){var e=new T.Mesh(eyeG,pumpFace);e.position.set(k*.36,.2,.88);e.rotation.x=Math.PI/2;e.rotation.y=Math.PI;g.add(e)}
+    var mo=new T.Mesh(mouthG,pumpFace);mo.position.set(0,-.28,.9);g.add(mo);
+    g.position.set(sp[0],.55*sp[2],sp[1]);g.scale.setScalar(sp[2]);g.rotation.y=-sp[0]*.03;pumpkins.add(g);
+  }
+})();
 
 /* trees */
 var foliageMat=new T.MeshStandardMaterial({color:'#ffffff',roughness:.9,flatShading:true});
@@ -1059,14 +1087,15 @@ var BG={
   snow:new T.SphereGeometry(.5,18,8,0,TAU,0,Math.PI*.38),
   eye:new T.SphereGeometry(.075,10,8),
   pupil:new T.SphereGeometry(.035,8,6),
-  brow:new T.BoxGeometry(.16,.035,.04)
+  brow:new T.BoxGeometry(.16,.035,.04),
+  stem:new T.CylinderGeometry(.04,.07,.2,6)
 };
 var BM={};
 (function(){
   function set(k,bun,patty,cheese,tomato,lettuce,seedc,extra){
     var gold=k==='gold',burnt=k==='burnt';
     function mk(c,r){
-      if(k==='shine'||k==='blue'||k==='pink')return std(c,.16,.9,{emissive:k==='blue'?'#0a3f8a':k==='pink'?'#9a1f5f':'#9a6200',emissiveIntensity:.55});
+      if(k==='shine'||k==='blue'||k==='pink')return std(c,.16,.9,{emissive:k==='blue'?'#4a1a8a':k==='pink'?'#1f7a10':'#a34200',emissiveIntensity:.55});
       if(gold)return std(c,.28,.7,{emissive:'#8a5a00',emissiveIntensity:.45});
       var o=std(c,r,0);
       if(burnt){o.emissive=new T.Color('#ff2a1a');o.emissiveIntensity=.14}
@@ -1076,17 +1105,18 @@ var BM={};
   }
   set('norm','#eaa046','#5b2e1b','#ffcf3a','#ff5a4a','#6fd05a','#fff1c9');
   set('gold','#ffd54a','#b87900','#fff6c2','#ff9d1f','#fff0a0','#fffbe0');
-  set('shine','#ffd84a','#e0a000','#fff2a6','#ffbf3a','#ffe680','#fffbe0');
-  set('blue','#58bdff','#1d6fd6','#c4e8ff','#2f8cff','#8fd8ff','#e8f6ff');
-  set('pink','#ff8fcf','#d6246f','#ffd0ea','#ff4f9d','#ffb0dc','#fff0f8');
+  set('shine','#ff8f1f','#6b2d12','#ffd04a','#c8321a','#7bd23a','#fff1c9');
+  set('blue','#b06bff','#4a1a8a','#e6ccff','#8a3dff','#d0a8ff','#f4eaff');
+  set('pink','#7dff4a','#1f6a14','#d9ffc4','#3fc41a','#a8ff80','#f0ffe8');
   set('burnt','#4a3228','#120c0a','#7a5a1c','#4a1a14','#34452a','#6a5648');
   BM.snow=std('#ffffff',.9,0);
+  BM.stem=std('#3f7a1f',.8,0);
   BM.white=new T.MeshBasicMaterial({color:'#ffffff'});
   BM.black=new T.MeshBasicMaterial({color:'#120c0a'});
   BM.glowGold=new T.SpriteMaterial({map:GLOW,color:'#ffd23f',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.7,fog:false});
-  BM.glowShine=new T.SpriteMaterial({map:GLOW,color:'#ffd23f',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.45,fog:false});
-  BM.glowBlue=new T.SpriteMaterial({map:GLOW,color:'#35b8ff',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.7,fog:false});
-  BM.glowPink=new T.SpriteMaterial({map:GLOW,color:'#ff6fbd',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.7,fog:false});
+  BM.glowShine=new T.SpriteMaterial({map:GLOW,color:'#ff8a1a',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.45,fog:false});
+  BM.glowBlue=new T.SpriteMaterial({map:GLOW,color:'#a04aff',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.7,fog:false});
+  BM.glowPink=new T.SpriteMaterial({map:GLOW,color:'#6aff3a',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.7,fog:false});
   BM.glowBurnt=new T.SpriteMaterial({map:GLOW,color:'#ff3030',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.55,fog:false});
 })();
 var seedPos=(function(){
@@ -1118,6 +1148,7 @@ function makeBurger(kind,frost,shiny){
       var b=new T.Mesh(BG.brow,BM.black);b.position.set(i*.15,.4,.4);b.rotation.z=-i*.45;g.add(b);
     }
   }
+  if(shiny&&kind==='norm'||kind==='blue'||kind==='pink'){a=new T.Mesh(BG.stem,BM.stem);a.position.set(0,.6,0);a.rotation.z=.25;g.add(a)}
   if(frost){a=new T.Mesh(BG.snow,BM.snow);a.scale.set(1.03,.82,1.03);a.position.y=.13;g.add(a)}
   if(kind==='gold'||kind==='burnt'||kind==='blue'||kind==='pink'||shiny){
     var sp=new T.Sprite(kind==='burnt'?BM.glowBurnt:kind==='blue'?BM.glowBlue:kind==='pink'?BM.glowPink:(kind==='gold'?BM.glowGold:BM.glowShine));sp.scale.set(shiny&&kind==='norm'?1.9:2.3,shiny&&kind==='norm'?1.9:2.3,1);sp.position.y=.1;g.add(sp);
@@ -1193,6 +1224,8 @@ function applyEnv(){
     var m=foliageMeshes[i],b=m.userData.base,k=b*cur.foliageScale;
     m.scale.set(k,k*(m.userData.by?1.15:1),k);
   }
+  pumpkins.visible=seasonIdx===4;
+  if(pumpkins.visible)pumpFace.color.setHSL(.12,1,.55+.1*Math.sin(t*5));
   var fo=Math.round(cur.cold*100)/100;
   if(fo!==lastFrost){lastFrost=fo;frostEl.style.opacity=(fo*.6).toFixed(3)}
 }
@@ -1265,8 +1298,8 @@ function caught(it){
   var v=Math.ceil(({gold:5,blue:4,pink:6}[it.kind]||1)*mult*(baby.on?2:1)*SEASONS[seasonIdx].coin);
   run.coins+=v;
   var spk=it.kind==='gold'||it.kind==='blue'||it.kind==='pink';
-  pop(it.x,it.y+.6,'+'+v,baby.on?'#ff9ad0':(it.kind==='blue'?'#6fc8ff':it.kind==='pink'?'#ff8fcf':it.kind==='gold'||it.shiny?'#ffd23f':'#fff6e3'),spk?32:26);
-  burst(it.x,it.y,spk?16:8,it.kind==='blue'?['#35b8ff','#c4e8ff','#ffffff']:it.kind==='pink'?['#ff6fbd','#ffd0ea','#ffffff']:['#ffd23f','#fff3a8','#ffb347']);
+  pop(it.x,it.y+.6,'+'+v,baby.on?'#ff9ad0':(it.kind==='blue'?'#c48bff':it.kind==='pink'?'#8dff6a':it.kind==='gold'?'#ffd23f':it.shiny?'#ff9a2a':'#fff6e3'),spk?32:26);
+  burst(it.x,it.y,spk?16:8,it.kind==='blue'?['#a04aff','#e6ccff','#ffffff']:it.kind==='pink'?['#6aff3a','#d9ffc4','#ffffff']:it.shiny?['#ff8a1a','#ffd04a','#ffffff']:['#ffd23f','#fff3a8','#ffb347']);
   if(spk)sfx.gold();else sfx.coin(run.combo);
 }
 function missed(it){
@@ -1428,7 +1461,7 @@ function updateMenu(){
   $('#mBest').textContent=save.best>0?'Best run: '+save.best+' coins':'Your first run is waiting';
   var evEl=$('#mEvent');
   evEl.className='best ev'+(evOn?' on':'');
-  evEl.textContent=evOn?'GOLDEN HOUR is live! Shiny gold burgers, blue and pink bonus, coins x2 · until 20:00':'Golden Hour daily at 19:00 · starts in '+eventIn();
+  evEl.textContent=evOn?'HALLOWEEN HOUR is live! Pumpkin burgers, purple and green bonus, coins x2 · until 20:00':'Halloween Hour daily at 19:00 · starts in '+eventIn();
   var deal=byId(dealId()),owned=save.owned.indexOf(deal.id)>=0;
   $('#dealBadge').hidden=owned;
   var mb=$('#muteBtn');
@@ -1437,6 +1470,47 @@ function updateMenu(){
   mb.setAttribute('aria-label',save.muted?'Sound off':'Sound on');
 }
 setInterval(function(){if(mode==='menu'&&curScreen==='menu')updateMenu()},20000);
+/* spider that crawls across the screen during Halloween Hour */
+(function(){
+  var el=$('#spider'),lg=$('#spLegs'),i,sd,html='';
+  for(i=0;i<4;i++){
+    var y0=-7+i*5.5,sp=(i-1.5)*9;
+    for(sd=-1;sd<=1;sd+=2){
+      html+='<g class="lg'+((i+(sd>0?1:0))%2?' b':'')+'"><path d="M'+(sd*4)+' '+y0+' Q'+(sd*20)+' '+(y0-14)+' '+(sd*31)+' '+(y0+sp)+'" fill="none" stroke="#14101c" stroke-width="2.6" stroke-linecap="round"/></g>';
+    }
+  }
+  lg.innerHTML=html;
+  var st={on:false,wait:1.5,u:0,L:1,x0:0,y0:0,x1:0,y1:0,nx:0,ny:0,amp:26,pauseU:.5,pause:0,speed:120};
+  function pos(u){var w=Math.sin(u*st.L/75)*st.amp;return {x:st.x0+(st.x1-st.x0)*u+st.nx*w,y:st.y0+(st.y1-st.y0)*u+st.ny*w}}
+  function start(){
+    var m=60,e=(Math.random()*4)|0,e2=(e+1+((Math.random()*3)|0))%4;
+    function pt(k){var r=Math.random();return k===0?[r*W,-m]:k===1?[W+m,r*H]:k===2?[r*W,H+m]:[-m,r*H]}
+    var a=pt(e),b=pt(e2);
+    st.x0=a[0];st.y0=a[1];st.x1=b[0];st.y1=b[1];
+    var dx=st.x1-st.x0,dy=st.y1-st.y0;st.L=Math.sqrt(dx*dx+dy*dy)||1;st.nx=-dy/st.L;st.ny=dx/st.L;
+    st.u=0;st.pauseU=.25+Math.random()*.5;st.pause=0;st.speed=95+Math.random()*60;st.amp=18+Math.random()*16;st.on=true;
+  }
+  window.__spiderStep=function(dt){
+    var show=evOn&&!paused&&(curScreen==='menu'||curScreen==='play');
+    if(!show){if(!el.hidden)el.hidden=true;st.on=false;return}
+    if(!st.on){
+      st.wait-=dt;
+      if(st.wait<=0){start();st.wait=0}
+      else{if(!el.hidden)el.hidden=true;return}
+    }
+    var still=false;
+    if(st.pause>0){st.pause-=dt;still=true}
+    else{
+      var prev=st.u;st.u+=st.speed*dt/st.L;
+      if(prev<st.pauseU&&st.u>=st.pauseU){st.pause=.5+Math.random()*.7}
+    }
+    if(st.u>=1){st.on=false;st.wait=3+Math.random()*6;el.hidden=true;return}
+    var a=pos(st.u),b=pos(Math.min(1,st.u+.01)),ang=Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI+90;
+    if(el.hidden)el.hidden=false;
+    el.style.transform='translate('+a.x.toFixed(1)+'px,'+a.y.toFixed(1)+'px) rotate('+ang.toFixed(1)+'deg)';
+    el.classList.toggle('still',still);
+  };
+})();
 var toastT;
 function toast(m){
   var el=$('#toast');el.textContent=m;el.classList.add('show');
@@ -1661,6 +1735,7 @@ function frame(now){
   requestAnimationFrame(frame);
   var dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;
   if(!paused)update(dt);
+  if(window.__spiderStep)window.__spiderStep(paused?0:dt);
   render(now/1000);
   if(shopOpen){try{renderShop(now/1000)}catch(e){}}
 }
