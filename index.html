@@ -504,22 +504,60 @@ function blendEnv(dt){
 }
 function fmtTemp(t){return (t<0?'−':'')+Math.abs(t)+'°C'}
 
-/* ---------- leaderboard (storage adapter: replace these four functions to share scores through a server) ---------- */
-var BKEY='burgerrain.board.v1',lb=[],freshId=null;
+/* ---------- leaderboard: shared through Supabase, with a device-only fallback ---------- */
+var SB_URL='https://pvvgkrbxsaqngekxqlki.supabase.co';
+var SB_KEY='sb_publishable_5EQnuvdJRdYoZ2kFAj_Z8A__8AoeaZH';
+var BKEY='burgerrain.board.v1',DKEY='burgerrain.device.v1';
+var lbLocal=[],lbShared=[],lbLive=false,lbLoading=false,freshId=null,deviceId='';
 try{
   var lraw=JSON.parse(localStorage.getItem(BKEY)||'[]');
-  if(Array.isArray(lraw))lb=lraw.filter(function(e){return e&&typeof e.name==='string'&&typeof e.score==='number'}).slice(0,20);
+  if(Array.isArray(lraw))lbLocal=lraw.filter(function(e){return e&&typeof e.name==='string'&&typeof e.score==='number'}).slice(0,20);
 }catch(e){}
-function lbPersist(){try{localStorage.setItem(BKEY,JSON.stringify(lb))}catch(e){}}
+try{deviceId=localStorage.getItem(DKEY)||''}catch(e){}
+if(!/^[0-9a-f-]{36}$/.test(deviceId)){
+  deviceId=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16)});
+  try{localStorage.setItem(DKEY,deviceId)}catch(e){}
+}
+function lbList(){return lbLive?lbShared:lbLocal}
+function lbPersist(){try{localStorage.setItem(BKEY,JSON.stringify(lbLocal))}catch(e){}}
 function cleanName(s){return String(s||'').replace(/[\u0000-\u001f<>]/g,'').replace(/\s+/g,' ').trim().slice(0,14)}
-function lbRank(score){var n=0;for(var i=0;i<lb.length;i++)if(lb[i].score>=score)n++;return n+1}
-function lbAdd(name,score,seasonName){
+function lbRank(score){var l=lbList(),n=0;for(var i=0;i<l.length;i++)if(l[i].score>=score)n++;return n+1}
+function sbFetch(path,opts){
+  var ctl=window.AbortController?new AbortController():null,tm=setTimeout(function(){if(ctl)ctl.abort()},8000);
+  opts=opts||{};opts.headers=Object.assign({apikey:SB_KEY},opts.headers||{});
+  if(ctl)opts.signal=ctl.signal;
+  return fetch(SB_URL+path,opts).then(function(r){
+    clearTimeout(tm);
+    if(!r.ok)return r.text().then(function(t){throw new Error(t||String(r.status))});
+    return r.json();
+  },function(e){clearTimeout(tm);throw e});
+}
+/* top 20 from the shared table; resolves true when the server answered */
+function lbRefresh(){
+  lbLoading=true;
+  return sbFetch('/rest/v1/scores?select=id,name,score,season,created_at&order=score.desc,id.asc&limit=20').then(function(rows){
+    lbShared=(Array.isArray(rows)?rows:[]).map(function(r){return {id:'s'+r.id,name:String(r.name),score:Number(r.score),season:r.season||'',d:Date.parse(r.created_at)||Date.now()}});
+    lbLive=true;lbLoading=false;return true;
+  }).catch(function(){lbLive=false;lbLoading=false;return false});
+}
+function lbAddLocal(name,score,seasonName){
   var e={id:'e'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:name,score:score,season:seasonName,d:Date.now()};
-  lb.push(e);
-  lb.sort(function(a,b){return b.score-a.score||a.d-b.d});
-  var rank=lb.indexOf(e)+1;
-  lb=lb.slice(0,20);lbPersist();
-  return {entry:e,rank:rank};
+  lbLocal.push(e);
+  lbLocal.sort(function(a,b){return b.score-a.score||a.d-b.d});
+  var rank=lbLocal.indexOf(e)+1;
+  lbLocal=lbLocal.slice(0,20);lbPersist();
+  return {id:e.id,rank:rank,shared:false};
+}
+/* saves one score; shared when the server is reachable, otherwise on this device */
+function lbSubmit(name,score,seasonName){
+  if(!lbLive)return Promise.resolve(lbAddLocal(name,score,seasonName));
+  return sbFetch('/rest/v1/rpc/submit_score',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({p_name:name,p_score:score,p_season:seasonName,p_device:deviceId})
+  }).then(function(rows){
+    var r=Array.isArray(rows)?rows[0]:rows;
+    return lbRefresh().then(function(){return {id:'s'+r.out_id,rank:r.out_rank,shared:true}});
+  });
 }
 
 /* ---------- audio ---------- */
@@ -1162,8 +1200,10 @@ function endGame(){
   $('#oLevel').textContent='Lv '+lvl+' · '+SEASONS[seasonIdx].name;
   $('#oBank').textContent=save.coins;
   $('#oNew').hidden=!(isBest&&run.coins>0);
-  run.submitted=false;showEntry();
-  setTimeout(function(){if(mode==='over')setScreen('over')},750);
+  run.submitted=false;run.checking=true;showEntry();
+  var rn0=run;
+  lbRefresh().then(function(){rn0.checking=false;if(run===rn0&&mode==='over'&&curScreen==='over')showEntry()});
+  setTimeout(function(){if(mode==='over'){setScreen('over');showEntry()}},750);
 }
 function toMenu(){
   if(run&&mode==='play'){bankRun();save.runs++;persist()}
@@ -1188,27 +1228,42 @@ function showEntry(){
   var msg=$('#lbMsg'),form=$('#lbForm');
   $('#lbName').value=save.name||'';
   if(!run||run.coins<=0){msg.textContent='Catch some burgers to get on the board.';msg.className='lb-msg';form.hidden=true;return}
-  if(run.submitted){msg.textContent=run.rank?'Saved. You are #'+run.rank+' in the top 20.':'Saved.';msg.className='lb-msg good';form.hidden=true;return}
-  var rk=lbRank(run.coins);
-  if(rk<=20){msg.textContent=(rk===1?'New number one! ':'Top 20! ')+'You would be #'+rk+'. Add your name.';msg.className='lb-msg good';form.hidden=false}
-  else{msg.textContent='Not in the top 20 yet. #20 has '+lb[19].score+' coins.';msg.className='lb-msg';form.hidden=true}
+  if(run.submitted){
+    msg.textContent=run.rank?(run.shared?'Saved. You are #'+run.rank+' on the shared leaderboard.':'Saved on this device. You are #'+run.rank+'.'):'Saved.';
+    msg.className='lb-msg good';form.hidden=true;return;
+  }
+  if(run.checking){msg.textContent='Checking the leaderboard...';msg.className='lb-msg';form.hidden=true;return}
+  var l=lbList(),rk=lbRank(run.coins),where=lbLive?'':' (This device only.)';
+  if(rk<=20){msg.textContent=(rk===1?'New number one! ':'Top 20! ')+'You would be #'+rk+'. Add your name.'+where;msg.className='lb-msg good';form.hidden=false}
+  else{msg.textContent='Not in the top 20 yet. #20 has '+l[19].score+' coins.';msg.className='lb-msg';form.hidden=true}
 }
 function submitScore(){
-  if(!run||run.submitted||run.coins<=0)return;
+  if(!run||run.submitted||run.coins<=0||run.saving||run.checking)return;
   var nm=cleanName($('#lbName').value);
   if(!nm){toast('Type a name first');$('#lbName').focus();return}
   save.name=nm;persist();
-  var res=lbAdd(nm,run.coins,SEASONS[seasonIdx].name);
-  run.submitted=true;run.rank=res.rank<=20?res.rank:0;freshId=res.entry.id;
-  sfx.buy();showEntry();openBoard();
+  var rn=run,btn=$('#lbSave');
+  rn.saving=true;btn.disabled=true;
+  lbSubmit(nm,rn.coins,SEASONS[seasonIdx].name).then(function(res){
+    rn.saving=false;btn.disabled=false;
+    rn.submitted=true;rn.rank=res.rank<=20?res.rank:0;rn.shared=res.shared;freshId=res.id;
+    sfx.buy();
+    if(run===rn&&mode==='over'){showEntry();openBoard()}
+  }).catch(function(err){
+    rn.saving=false;btn.disabled=false;
+    toast(/slow down/i.test(String(err&&err.message))?'Slow down. Try again in a minute.':'Could not save. Check your connection and try again.');
+  });
 }
 function renderBoard(){
-  var ol=$('#boardRows');ol.textContent='';
-  if(!lb.length){
-    var li0=document.createElement('li');li0.className='empty';li0.textContent='No scores yet. Finish a run and add your name.';ol.appendChild(li0);return;
+  var ol=$('#boardRows'),list=lbList();ol.textContent='';
+  $('#boardNote').textContent=lbLive?'Top 20 players. Everyone who plays sees this list.':(lbLoading?'Loading the shared leaderboard...':'Offline: showing scores from this device only.');
+  if(!list.length){
+    var li0=document.createElement('li');li0.className='empty';
+    li0.textContent=lbLoading?'Loading the leaderboard...':'No scores yet. Finish a run and add your name.';
+    ol.appendChild(li0);return;
   }
   var me=cleanName(save.name).toLowerCase(),freshEl=null;
-  lb.forEach(function(e,i){
+  list.forEach(function(e,i){
     var li=document.createElement('li');
     li.className='row'+(i<3?' r'+(i+1):'')+(me&&e.name.toLowerCase()===me?' me':'')+(e.id===freshId?' fresh':'');
     var rk=document.createElement('div');rk.className='rk';rk.textContent=i+1;
@@ -1217,7 +1272,7 @@ function renderBoard(){
     if(e.id===freshId){var tg=document.createElement('em');tg.className='tag';tg.textContent='New';b.appendChild(tg);freshEl=li}
     var sm=document.createElement('small');
     var dd=new Date(e.d);
-    sm.textContent=(e.season||'')+' \u00b7 '+dd.toLocaleDateString(undefined,{month:'short',day:'numeric'});
+    sm.textContent=(e.season?e.season+' · ':'')+dd.toLocaleDateString(undefined,{month:'short',day:'numeric'});
     nm.appendChild(b);nm.appendChild(sm);
     var sc=document.createElement('div');sc.className='sc';
     var ic=document.createElement('i');ic.className='coin';sc.appendChild(ic);sc.appendChild(document.createTextNode(String(e.score)));
@@ -1225,7 +1280,11 @@ function renderBoard(){
   });
   if(freshEl)setTimeout(function(){try{freshEl.scrollIntoView({block:'center'})}catch(e){}},50);
 }
-function openBoard(){setScreen('board');$('#boardRows').scrollTop=0;renderBoard()}
+function openBoard(){
+  setScreen('board');$('#boardRows').scrollTop=0;
+  var p=lbRefresh();renderBoard();
+  p.then(function(){if(curScreen==='board')renderBoard()});
+}
 (function(){
   var h='';
   for(var i=0;i<MAXL;i++)h+='<svg class="heart" viewBox="0 0 24 22"><path d="M12 20.5S3 15 3 8.6A5 5 0 0 1 12 6a5 5 0 0 1 9 2.6C21 15 12 20.5 12 20.5z"/></svg>';
