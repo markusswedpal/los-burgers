@@ -314,7 +314,7 @@ button:focus-visible{outline:3px solid var(--cool);outline-offset:3px}
 @keyframes evglow{50%{box-shadow:0 0 0 2px rgba(26,11,51,.6),0 8px 34px rgba(255,150,40,.85)}}
 @keyframes evsweep{0%,55%{left:-60%}100%{left:130%}}
 @keyframes evbob{50%{transform:translateY(-3px) rotate(-5deg)}}
-@media (max-height:700px){.evt span{display:none}}
+@media (max-height:700px){.evt span:not(.evtag){display:none}}
 @media (prefers-reduced-motion:reduce){.evcard,.evcard::after,.evpk{animation:none}}
 .best.ev{margin-top:4px;font-size:.8rem;opacity:.9}
 .best.ev.on{color:#ff9a2a;opacity:1;font-weight:600;animation:evpulse 1.6s ease-in-out infinite}
@@ -1806,9 +1806,9 @@ function updateMenu(){
     var tag=ev.tag||(ev.key==='halloween'&&todayKey()===SPECIAL_DAY?'Halloween special':'');
     $('#evTag').hidden=!tag;$('#evTag').textContent=tag;
     $('#evIcon').innerHTML=ev.key==='candy'?EV_CANDY:EV_PUMPKIN;
-    $('#evTitle').textContent=live?ev.name+' is live!':(ev.h>=18?'Tonight':'Today')+' at '+ev.h+':00';
-    $('#evSub').textContent=live?ev.liveSub:ev.name+': '+ev.sub;
-    $('#evTime').textContent=live?'Ends in '+eventLeft(ev):'Starts in '+eventIn(ev);
+    $('#evTitle').textContent=live?ev.name+' is live!':ev.name;
+    $('#evSub').textContent=live?ev.liveSub:ev.sub;
+    $('#evTime').textContent=live?'Ends in '+eventLeft(ev):(ev.h>=18?'Tonight':'Today')+' at '+ev.h+':00 · starts in '+eventIn(ev);
   }
   var deal=byId(dealId()),owned=save.owned.indexOf(deal.id)>=0;
   $('#dealBadge').hidden=owned;
