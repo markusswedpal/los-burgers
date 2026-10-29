@@ -293,6 +293,16 @@ button:focus-visible{outline:3px solid var(--cool);outline-offset:3px}
   background:linear-gradient(135deg,rgba(255,122,18,.95),rgba(138,43,226,.92));border:2px solid #ffb25a;color:#fff;overflow:hidden;
   box-shadow:0 0 0 2px rgba(26,11,51,.6),0 8px 26px rgba(255,122,18,.45);animation:evin .6s cubic-bezier(.2,1.2,.3,1) both,evglow 2.2s ease-in-out .6s infinite}
 .evcard::after{content:'';position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-18deg);animation:evsweep 3.4s ease-in-out 1s infinite}
+.evcard.candy{background:linear-gradient(135deg,#ff8fd0,#7fd0ff);border-color:#fff;box-shadow:0 0 0 2px rgba(26,11,51,.5),0 8px 26px rgba(255,143,208,.55)}
+.evcard.candy{color:#2a1245}
+.evcard.candy .evt b{text-shadow:none}
+.evcard.candy .evt em{color:#8a1f6a;text-shadow:none}
+.evcard.candy .evt .evtag{background:#2a1245;color:#ffc4ea}
+.evcard.candy.live{color:#fff}
+.evcard.candy.live .evt b{text-shadow:0 2px 0 rgba(26,11,51,.6)}
+.evcard.candy.live .evt em{color:#fff3a8}
+.evcard.candy.live{background:linear-gradient(135deg,#ff6fbd,#59e0c0)}
+.evic{flex:none;display:flex}
 .evcard.live{background:linear-gradient(135deg,#ff9a2a,#ff3b6b);border-color:#ffe08a}
 .evpk{width:46px;height:46px;flex:none;filter:drop-shadow(0 3px 4px rgba(0,0,0,.4));animation:evbob 1.8s ease-in-out infinite}
 .evt{display:flex;flex-direction:column;gap:2px;min-width:0;text-align:left}
@@ -382,7 +392,7 @@ body{position:fixed;inset:0;width:100%;touch-action:manipulation;-webkit-touch-c
     </div>
     <p class="best" id="mBest"></p>
     <div class="evcard" id="mEvent" hidden role="status">
-      <svg class="evpk" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 9c1-4 4-6 7-6" fill="none" stroke="#5fbf3a" stroke-width="4" stroke-linecap="round"/><ellipse cx="24" cy="28" rx="20" ry="16" fill="#ff7a12"/><ellipse cx="14" cy="28" rx="8" ry="15" fill="#ff9a2a" opacity=".55"/><ellipse cx="34" cy="28" rx="8" ry="15" fill="#d95f00" opacity=".45"/><path d="M13 24l6 3-6 3zM35 24l-6 3 6 3zM15 35q9 7 18 0l-3-2-3 2-3-2-3 2-3-2z" fill="#2a0f3a"/></svg>
+      <span id="evIcon" class="evic"><svg class="evpk" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 9c1-4 4-6 7-6" fill="none" stroke="#5fbf3a" stroke-width="4" stroke-linecap="round"/><ellipse cx="24" cy="28" rx="20" ry="16" fill="#ff7a12"/><ellipse cx="14" cy="28" rx="8" ry="15" fill="#ff9a2a" opacity=".55"/><ellipse cx="34" cy="28" rx="8" ry="15" fill="#d95f00" opacity=".45"/><path d="M13 24l6 3-6 3zM35 24l-6 3 6 3zM15 35q9 7 18 0l-3-2-3 2-3-2-3 2-3-2z" fill="#2a0f3a"/></svg></span>
       <div class="evt"><span class="evtag" id="evTag" hidden>Halloween special</span><b id="evTitle"></b><span id="evSub"></span><em id="evTime"></em></div>
     </div>
   </section>
@@ -495,6 +505,7 @@ var SKINS=[
   {id:'stig',name:'Stig',rarity:'epic',price:650,body:'#3f7cff',accent:'#0d1f5a',eye:'#e8f4ff',acc:'cap+headphones',c2:'#ff7a2e'},
   {id:'elsi',name:'Elsi',rarity:'epic',price:650,body:'#ff8fd0',accent:'#5a2a00',eye:'#fff0fa',acc:'hair+ponytail+bow',c2:'#8a3dff'},
   {id:'lise',name:'Lise',rarity:'epic',price:650,body:'#b58cff',accent:'#3a1a00',eye:'#fffbe0',acc:'hair+pigtails+bow',c2:'#ffe14a'},
+  {id:'lucas',name:'Lucas',rarity:'legendary',price:1500,body:'#ff6f5a',accent:'#6b4423',eye:'#c8803a',acc:'hair+quiff',c2:'#ffffff'},
   {id:'ejlert',name:'Ejlert',rarity:'exclusive',price:20000,body:'#7fe9ff',accent:'#2a9fd0',eye:'#ffffff',acc:'hair+spikes+diamonds',c2:'#e6fbff',trail:['#9fe9ff','#ffffff','#c9b8ff'],sparkle:true,metal:.9,gem:true},
   {id:'copsven',name:'Officer Sven',kind:'baby',rarity:'legendary',price:1800}
 ];
@@ -555,7 +566,12 @@ var SEASONS=[
    skyTop:'#150a2e',skyBot:'#ff7a1a',fog:'#ff8a3a',ground:'#3d2240',lane:'#4a2a55',hemiSky:'#ff9a5a',hemiGnd:'#3a2048',hemiI:.85,
    dir:'#ffa24a',dirI:1.05,rim:'#a04aff',rimI:.7,mount:'#5a2a6a',foliage:'#ff8a1a',trunk:'#1a0f14',cloud:'#8a3a6a',sun:'#ffb347',sunY:20,sunS:2.4,
    pColor:'#ff8a1a',pFall:.9,pSway:1.2,pSize:.2,pAlpha:.85,fogNear:42,fogFar:190,laneRough:.6,foliageScale:1,cold:0,
-   w:17,zeta:1,fall:.95,wind:.4,catchM:1.05,coin:2}
+   w:17,zeta:1,fall:.95,wind:.4,catchM:1.05,coin:2},
+  {name:'Candy',temp:24,color:'#ff8fd0',note:'Candy afternoon! Sweet pastel burgers and sugar rain. Coins x2.',
+   skyTop:'#9fd8ff',skyBot:'#ffd1f0',fog:'#ffe3f5',ground:'#ffc4e1',lane:'#8fd6c8',hemiSky:'#fff0fb',hemiGnd:'#ffb6d9',hemiI:.95,
+   dir:'#fff4e6',dirI:1.1,rim:'#ff9ad8',rimI:.5,mount:'#c9b3ff',foliage:'#8ff0c6',trunk:'#fff2c2',cloud:'#ffffff',sun:'#fff1a8',sunY:40,sunS:1.3,
+   pColor:'#ffd1f0',pFall:1.4,pSway:.9,pSize:.18,pAlpha:.9,fogNear:70,fogFar:280,laneRough:.5,foliageScale:1.05,cold:0,
+   w:17,zeta:1,fall:.92,wind:.2,catchM:1.06,coin:2}
 ];
 var COLS=['skyTop','skyBot','fog','ground','lane','hemiSky','hemiGnd','dir','rim','mount','foliage','trunk','cloud','sun','pColor'];
 var NUMS=['hemiI','dirI','rimI','sunY','sunS','pFall','pSway','pSize','pAlpha','fogNear','fogFar','laneRough','foliageScale','cold','w','zeta','fall','wind','catchM','coin'];
@@ -566,17 +582,38 @@ function mkEnv(d){
   return e;
 }
 var ENV=SEASONS.map(mkEnv);
-/* Halloween Hour: every day 19:00-19:59 on the player's clock */
-function eventOn(){return new Date().getHours()===19}
-function eventLeft(){var n=new Date(),m=Math.max(0,Math.round((new Date(n.getFullYear(),n.getMonth(),n.getDate(),20,0,0)-n)/6e4));return m+' min'}
+/* timed events on the player's clock. s = season index, h = start hour, len = hours, date = only that day (omit for daily) */
+var EVENTS=[
+  {key:'halloween',s:4,h:19,len:1,name:'Halloween Hour',liveSub:'Pumpkin burgers, purple and green bonus, coins x2',sub:'Pumpkin burgers, a spooky spider and coins x2',pre:15},
+  {key:'candy',s:5,h:14,len:1,date:'2026-10-29',name:'Candy Afternoon',liveSub:'Sweet pastel burgers, sugar rain and coins x2',sub:'Pastel burgers, candy rain and coins x2',pre:0,tag:'Today only'}
+];
 var SPECIAL_DAY='2026-10-28';
 function todayKey(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
-function eventIn(){
-  var n=new Date(),t0=new Date(n.getFullYear(),n.getMonth(),n.getDate(),19,0,0);
-  if(n>=t0)t0=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1,19,0,0);
+function eventNow(){
+  var n=new Date(),h=n.getHours(),k=todayKey();
+  for(var i=0;i<EVENTS.length;i++){var e=EVENTS[i];if((!e.date||e.date===k)&&h>=e.h&&h<e.h+e.len)return e}
+  return null;
+}
+function eventOn(){return !!eventNow()}
+function eventLeft(e){var n=new Date(),m=Math.max(0,Math.round((new Date(n.getFullYear(),n.getMonth(),n.getDate(),e.h+e.len,0,0)-n)/6e4));return m+' min'}
+function eventIn(e){
+  var n=new Date(),t0=new Date(n.getFullYear(),n.getMonth(),n.getDate(),e.h,0,0);
+  if(n>=t0)t0=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1,e.h,0,0);
   var m=Math.round((t0-n)/6e4);return Math.floor(m/60)+'h '+(m%60)+'m';
 }
-var evOn=eventOn(),evCheck=0;
+/* which event's card to show on the menu: the live one, else the next one that is inside its announcement window */
+function eventCard(){
+  var live=eventNow();if(live)return live;
+  var n=new Date(),h=n.getHours(),k=todayKey(),best=null;
+  for(var i=0;i<EVENTS.length;i++){
+    var e=EVENTS[i];
+    if(e.date){if(e.date!==k||h>=e.h)continue}
+    else{var spec=e.key==='halloween'&&k===SPECIAL_DAY;if(!(spec?h<e.h:(h>=e.pre&&h<e.h)))continue}
+    if(!best||e.h<best.h)best=e;
+  }
+  return best;
+}
+var evCur=eventNow(),evOn=!!evCur,evCheck=0;
 function realSeason(){var m=new Date().getMonth();return m>=2&&m<=4?0:m>=5&&m<=7?1:m>=8&&m<=10?2:3}
 var seasonIdx=realSeason();
 var cur=mkEnv(SEASONS[seasonIdx]);
@@ -801,6 +838,26 @@ var eL=new T.Mesh(new T.BoxGeometry(.16,.12,9.5),edgeMat);eL.position.set(-6.97,
 var eR=eL.clone();eR.position.x=6.97;scene.add(eR);
 
 /* halloween pumpkins: only shown during the 19:00 hour */
+var candies=new T.Group(),candyItems=[];candies.visible=false;scene.add(candies);
+(function(){
+  var cols=['#ff9ad0','#8fd8ff','#b8f0c8','#ffe08a','#d3b8ff','#ffb48a'];
+  var body=new T.SphereGeometry(.5,12,8),cone=new T.ConeGeometry(.32,.5,8),stick=new T.CylinderGeometry(.04,.04,1.1,6),disc=new T.CylinderGeometry(.55,.55,.14,16),stickM=std('#ffffff',.6,0);
+  function place(g,top){
+    var x=rnd(-18,18);g.userData.x=x;g.userData.z=Math.abs(x)<8?rnd(-20,-2):rnd(-20,4);g.userData.y=top?rnd(26,34):rnd(0,30);
+  }
+  for(var i=0;i<46;i++){
+    var c=cols[i%cols.length],m=std(c,.3,.1,{emissive:c,emissiveIntensity:.25}),g=new T.Group(),type=i%3,sx;
+    if(type===0){
+      var b=new T.Mesh(body,m);b.scale.set(1.2,.8,.8);g.add(b);
+      for(sx=-1;sx<=1;sx+=2){var w=new T.Mesh(cone,m);w.rotation.z=-sx*Math.PI/2;w.position.x=sx*.78;g.add(w)}
+    }else if(type===1){
+      var d=new T.Mesh(disc,m);d.rotation.x=Math.PI/2;g.add(d);var st=new T.Mesh(stick,stickM);st.position.y=-.75;g.add(st);
+    }else g.add(new T.Mesh(body,m));
+    g.scale.setScalar(.55+((i*37)%10)/22);
+    g.userData={v:rnd(2.5,6),sp:rnd(-2,2),place:place};
+    place(g,false);candies.add(g);candyItems.push(g);
+  }
+})();
 var pumpkins=new T.Group();pumpkins.visible=false;scene.add(pumpkins);
 var pumpFace=new T.MeshBasicMaterial({color:'#ffe066'});
 (function(){
@@ -1066,6 +1123,7 @@ function buildHero(sk){
   if(has('hair')){
     head.add(new T.Mesh(new T.SphereGeometry(1.05,32,14,0,TAU,0,Math.PI*.3),gear));
   }
+  if(has('quiff')){var qf=new T.Mesh(new T.SphereGeometry(.5,14,10),gear);qf.scale.set(1.15,.6,.9);qf.position.set(.12,.98,.32);qf.rotation.z=-.3;head.add(qf)}
   if(has('spikes')){
     var spk2=[[0,.05],[.5,.3],[-.5,.3],[.9,.1],[-.9,.1],[.35,-.45],[-.35,-.45],[0,-.65]];
     for(i=0;i<spk2.length;i++){
@@ -1221,7 +1279,8 @@ var BG={
   eye:new T.SphereGeometry(.075,10,8),
   pupil:new T.SphereGeometry(.035,8,6),
   brow:new T.BoxGeometry(.16,.035,.04),
-  stem:new T.CylinderGeometry(.04,.07,.2,6)
+  stem:new T.CylinderGeometry(.04,.07,.2,6),
+  cherry:new T.SphereGeometry(.1,10,8)
 };
 var BM={};
 (function(){
@@ -1229,6 +1288,7 @@ var BM={};
     var gold=k==='gold',burnt=k==='burnt';
     function mk(c,r){
       if(k==='shine'||k==='blue'||k==='pink')return std(c,.16,.9,{emissive:k==='blue'?'#4a1a8a':k==='pink'?'#1f7a10':'#a34200',emissiveIntensity:.55});
+      if(k==='candy'||k==='cblue'||k==='cpink')return std(c,.3,.15,{emissive:c,emissiveIntensity:.22});
       if(gold)return std(c,.28,.7,{emissive:'#8a5a00',emissiveIntensity:.45});
       var o=std(c,r,0);
       if(burnt){o.emissive=new T.Color('#ff2a1a');o.emissiveIntensity=.14}
@@ -1241,13 +1301,20 @@ var BM={};
   set('shine','#ff8f1f','#6b2d12','#ffd04a','#c8321a','#7bd23a','#fff1c9');
   set('blue','#b06bff','#4a1a8a','#e6ccff','#8a3dff','#d0a8ff','#f4eaff');
   set('pink','#7dff4a','#1f6a14','#d9ffc4','#3fc41a','#a8ff80','#f0ffe8');
+  set('candy','#ffb3dd','#8a5a44','#fff1a8','#ff8fb8','#b8f5d6','#ffffff');
+  set('cblue','#9fdcff','#4a7fb8','#e4f5ff','#6fb8ff','#c4ecff','#ffffff');
+  set('cpink','#ffa0d6','#b8387f','#ffe0f1','#ff6fb8','#ffc4e6','#ffffff');
   set('burnt','#4a3228','#120c0a','#7a5a1c','#4a1a14','#34452a','#6a5648');
   BM.snow=std('#ffffff',.9,0);
   BM.stem=std('#3f7a1f',.8,0);
+  BM.cherry=std('#ff2a4a',.25,0,{emissive:'#a01030',emissiveIntensity:.4});
   BM.white=new T.MeshBasicMaterial({color:'#ffffff'});
   BM.black=new T.MeshBasicMaterial({color:'#120c0a'});
   BM.glowGold=new T.SpriteMaterial({map:GLOW,color:'#ffd23f',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.7,fog:false});
   BM.glowShine=new T.SpriteMaterial({map:GLOW,color:'#ff8a1a',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.45,fog:false});
+  BM.glowCandy=new T.SpriteMaterial({map:GLOW,color:'#ff9ad0',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.55,fog:false});
+  BM.glowCBlue=new T.SpriteMaterial({map:GLOW,color:'#7fd0ff',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.6,fog:false});
+  BM.glowCPink=new T.SpriteMaterial({map:GLOW,color:'#ff8fd0',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.6,fog:false});
   BM.glowBlue=new T.SpriteMaterial({map:GLOW,color:'#a04aff',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.7,fog:false});
   BM.glowPink=new T.SpriteMaterial({map:GLOW,color:'#6aff3a',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.7,fog:false});
   BM.glowBurnt=new T.SpriteMaterial({map:GLOW,color:'#ff3030',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.55,fog:false});
@@ -1261,7 +1328,10 @@ var seedPos=(function(){
   return out;
 })();
 function makeBurger(kind,frost,shiny){
-  var m=BM[kind==='norm'&&shiny?'shine':kind],g=new T.Group(),a;
+  var candyEv=!!(evCur&&evCur.s===5),k2=kind;
+  if(candyEv){if(kind==='blue')k2='cblue';else if(kind==='pink')k2='cpink';else if(kind==='norm'&&shiny)k2='candy'}
+  else if(kind==='norm'&&shiny)k2='shine';
+  var m=BM[k2],g=new T.Group(),a;
   a=new T.Mesh(BG.bunB,m.bun);a.scale.y=.45;a.position.y=-.16;g.add(a);
   a=new T.Mesh(BG.patty,m.patty);a.position.y=-.09;g.add(a);
   a=new T.Mesh(BG.cheese,m.cheese);a.position.y=.0;a.rotation.y=Math.PI/4;g.add(a);
@@ -1281,10 +1351,13 @@ function makeBurger(kind,frost,shiny){
       var b=new T.Mesh(BG.brow,BM.black);b.position.set(i*.15,.4,.4);b.rotation.z=-i*.45;g.add(b);
     }
   }
-  if(shiny&&kind==='norm'||kind==='blue'||kind==='pink'){a=new T.Mesh(BG.stem,BM.stem);a.position.set(0,.6,0);a.rotation.z=.25;g.add(a)}
+  if(shiny&&kind==='norm'||kind==='blue'||kind==='pink'){
+    if(candyEv){a=new T.Mesh(BG.cherry,BM.cherry);a.position.set(0,.58,0);g.add(a)}
+    else{a=new T.Mesh(BG.stem,BM.stem);a.position.set(0,.6,0);a.rotation.z=.25;g.add(a)}
+  }
   if(frost){a=new T.Mesh(BG.snow,BM.snow);a.scale.set(1.03,.82,1.03);a.position.y=.13;g.add(a)}
   if(kind==='gold'||kind==='burnt'||kind==='blue'||kind==='pink'||shiny){
-    var sp=new T.Sprite(kind==='burnt'?BM.glowBurnt:kind==='blue'?BM.glowBlue:kind==='pink'?BM.glowPink:(kind==='gold'?BM.glowGold:BM.glowShine));sp.scale.set(shiny&&kind==='norm'?1.9:2.3,shiny&&kind==='norm'?1.9:2.3,1);sp.position.y=.1;g.add(sp);
+    var sp=new T.Sprite(kind==='burnt'?BM.glowBurnt:kind==='gold'?BM.glowGold:({blue:BM.glowBlue,pink:BM.glowPink,cblue:BM.glowCBlue,cpink:BM.glowCPink,candy:BM.glowCandy}[k2]||BM.glowShine));sp.scale.set(shiny&&kind==='norm'?1.9:2.3,shiny&&kind==='norm'?1.9:2.3,1);sp.position.y=.1;g.add(sp);
   }
   return g;
 }
@@ -1397,7 +1470,15 @@ function applyEnv(){
     var m=foliageMeshes[i],b=m.userData.base,k=b*cur.foliageScale;
     m.scale.set(k,k*(m.userData.by?1.15:1),k);
   }
-  pumpkins.visible=seasonIdx===4;
+  pumpkins.visible=seasonIdx===4;candies.visible=seasonIdx===5;
+  if(candies.visible){
+    var cdt=Math.min(.05,Math.max(0,t-(applyEnv.lt||t)));applyEnv.lt=t;
+    for(var ci=0;ci<candyItems.length;ci++){
+      var cg=candyItems[ci],ud=cg.userData;
+      ud.y-=ud.v*cdt;if(ud.y<-1)ud.place(cg,true);
+      cg.position.set(ud.x,ud.y,ud.z);cg.rotation.z+=ud.sp*cdt;cg.rotation.y+=ud.sp*.5*cdt;
+    }
+  }
   if(pumpkins.visible)pumpFace.color.setHSL(.12,1,.55+.1*Math.sin(t*5));
   var fo=Math.round(cur.cold*100)/100;
   if(fo!==lastFrost){lastFrost=fo;frostEl.style.opacity=(fo*.6).toFixed(3)}
@@ -1543,8 +1624,9 @@ function caught(it){
   var v=Math.ceil(({gold:5,blue:4,pink:6}[it.kind]||1)*mult*(baby.on?2:1)*SEASONS[seasonIdx].coin);
   run.coins+=v;
   var spk=it.kind==='gold'||it.kind==='blue'||it.kind==='pink';
-  pop(it.x,it.y+.6,'+'+v,baby.on?'#ff9ad0':(it.kind==='blue'?'#c48bff':it.kind==='pink'?'#8dff6a':it.kind==='gold'?'#ffd23f':it.shiny?'#ff9a2a':'#fff6e3'),spk?32:26);
-  burst(it.x,it.y,spk?16:8,it.kind==='blue'?['#a04aff','#e6ccff','#ffffff']:it.kind==='pink'?['#6aff3a','#d9ffc4','#ffffff']:it.shiny?['#ff8a1a','#ffd04a','#ffffff']:['#ffd23f','#fff3a8','#ffb347']);
+  var cd=evCur&&evCur.s===5;
+  pop(it.x,it.y+.6,'+'+v,baby.on?'#ff9ad0':(it.kind==='blue'?(cd?'#8fd8ff':'#c48bff'):it.kind==='pink'?(cd?'#ffa0d6':'#8dff6a'):it.kind==='gold'?'#ffd23f':it.shiny?(cd?'#ffb3dd':'#ff9a2a'):'#fff6e3'),spk?32:26);
+  burst(it.x,it.y,spk?16:8,it.kind==='blue'?(cd?['#7fd0ff','#e4f5ff','#ffffff']:['#a04aff','#e6ccff','#ffffff']):it.kind==='pink'?(cd?['#ff8fd0','#ffe0f1','#ffffff']:['#6aff3a','#d9ffc4','#ffffff']):it.shiny?(cd?['#ff9ad0','#fff1a8','#8fd8ff']:['#ff8a1a','#ffd04a','#ffffff']):['#ffd23f','#fff3a8','#ffb347']);
   if(spk)sfx.gold();else sfx.coin(run.combo);
   buzz(spk?18:8);if(it.bolt)hitBoss();
 }
@@ -1579,7 +1661,7 @@ function startGame(){
   run={coins:0,lives:MAXL,time:0,combo:0,streak:0,caught:0,banked:0,submitted:false,rank:0,fx:{magnet:0,shield:0,slow:0},puT:rnd(10,14),nextBoss:40,bosses:0,startSeason:(realSeason()+save.runs)%4};
   clearItems();resetBoss();shake=0;flash=0;spawnT=.9;
   hero.x=hero.tx=0;hero.v=0;resetBaby();
-  evOn=eventOn();var s0=evOn?4:run.startSeason;
+  evCur=eventNow();evOn=!!evCur;var s0=evOn?evCur.s:run.startSeason;
   setSeason(s0,false);showBanner(s0);
   mode='play';hudCache={};setScreen('play');updateHud();
 }
@@ -1711,17 +1793,23 @@ function updateHud(){
     hudCache.k=ck;
   }
 }
+var EV_PUMPKIN='<svg class="evpk" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 9c1-4 4-6 7-6" fill="none" stroke="#5fbf3a" stroke-width="4" stroke-linecap="round"/><ellipse cx="24" cy="28" rx="20" ry="16" fill="#ff7a12"/><ellipse cx="14" cy="28" rx="8" ry="15" fill="#ff9a2a" opacity=".55"/><ellipse cx="34" cy="28" rx="8" ry="15" fill="#d95f00" opacity=".45"/><path d="M13 24l6 3-6 3zM35 24l-6 3 6 3zM15 35q9 7 18 0l-3-2-3 2-3-2-3 2-3-2z" fill="#2a0f3a"/></svg>';
+var EV_CANDY='<svg class="evpk" viewBox="0 0 48 48" aria-hidden="true"><path d="M2 14l12 10L2 34z" fill="#ffb3dd"/><path d="M46 14L34 24l12 10z" fill="#ffb3dd"/><circle cx="24" cy="24" r="14" fill="#ff7fc2"/><path d="M14 16c4 2 6 6 6 10s-2 7-4 9M24 11c4 3 6 8 6 13s-2 9-5 13M33 15c-3 3-4 6-4 10s1 7 3 10" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"/></svg>';
 function updateMenu(){
   $('#mCoins').textContent=save.coins;
   $('#mBest').textContent=save.best>0?'Best run: '+save.best+' coins':'Your first run is waiting';
-  var ec=$('#mEvent'),hr=new Date().getHours(),special=todayKey()===SPECIAL_DAY;
-  /* info card: from 15:00 every day, and all day on the special day, until the hour is over */
-  var showEv=evOn||(hr>=15&&hr<19)||(special&&hr<19);
-  ec.hidden=!showEv;ec.className='evcard'+(evOn?' live':'');
-  $('#evTag').hidden=!(special&&showEv);
-  $('#evTitle').textContent=evOn?'Halloween Hour is live!':(special?'Tonight at 19:00':'Today at 19:00');
-  $('#evSub').textContent=evOn?'Pumpkin burgers, purple and green bonus, coins x2':'Halloween Hour: pumpkin burgers, a spooky spider and coins x2';
-  $('#evTime').textContent=evOn?'Ends in '+eventLeft():'Starts in '+eventIn();
+  var ec=$('#mEvent'),ev=eventCard();
+  ec.hidden=!ev;
+  if(ev){
+    var live=evOn&&evCur===ev||(evOn&&evCur&&evCur.key===ev.key);
+    ec.className='evcard'+(live?' live':'')+(ev.key==='candy'?' candy':'');
+    var tag=ev.tag||(ev.key==='halloween'&&todayKey()===SPECIAL_DAY?'Halloween special':'');
+    $('#evTag').hidden=!tag;$('#evTag').textContent=tag;
+    $('#evIcon').innerHTML=ev.key==='candy'?EV_CANDY:EV_PUMPKIN;
+    $('#evTitle').textContent=live?ev.name+' is live!':(ev.h>=18?'Tonight':'Today')+' at '+ev.h+':00';
+    $('#evSub').textContent=live?ev.liveSub:ev.name+': '+ev.sub;
+    $('#evTime').textContent=live?'Ends in '+eventLeft(ev):'Starts in '+eventIn(ev);
+  }
   var deal=byId(dealId()),owned=save.owned.indexOf(deal.id)>=0;
   $('#dealBadge').hidden=owned;
   var xb=$('#musicBtn'),hb2=$('#hapBtn');
@@ -1754,7 +1842,7 @@ setInterval(function(){if(mode==='menu'&&curScreen==='menu')updateMenu()},20000)
     st.u=0;st.pauseU=.25+Math.random()*.5;st.pause=0;st.speed=95+Math.random()*60;st.amp=18+Math.random()*16;st.on=true;
   }
   window.__spiderStep=function(dt){
-    var show=evOn&&!paused&&(curScreen==='menu'||curScreen==='play');
+    var show=evOn&&evCur.s===4&&!paused&&(curScreen==='menu'||curScreen==='play');
     if(!show){if(!el.hidden)el.hidden=true;st.on=false;return}
     if(!st.on){
       st.wait-=dt;
@@ -1887,14 +1975,14 @@ function renderShop(tt){
 var last=performance.now(),lastBreath=0;
 function update(dt){
   t+=dt;
-  evCheck-=dt;if(evCheck<=0){evCheck=1;var e2=eventOn();if(e2!==evOn){evOn=e2;if(mode==='menu')updateMenu()}}
+  evCheck-=dt;if(evCheck<=0){evCheck=1;var e2=eventNow();if((e2&&e2.s)!==(evCur&&evCur.s)){evCur=e2;evOn=!!e2;if(mode==='menu')updateMenu()}}
   var i,it;
   if(mode==='play'){
-    var si=evOn?4:(run.startSeason+Math.floor(run.time/SEASON_LEN))%4;
+    var si=evOn?evCur.s:(run.startSeason+Math.floor(run.time/SEASON_LEN))%4;
     if(si!==seasonIdx)setSeason(si,true);
   }else if(evOn){
-    if(seasonIdx!==4)setSeason(4,false);
-  }else if(seasonIdx===4){
+    if(seasonIdx!==evCur.s)setSeason(evCur.s,false);
+  }else if(seasonIdx>=4){
     setSeason(realSeason(),false);
   }else{
     menuSeasonT-=dt;if(menuSeasonT<=0){menuSeasonT=8;setSeason((seasonIdx+1)%4,false)}
