@@ -293,6 +293,8 @@ button:focus-visible{outline:3px solid var(--cool);outline-offset:3px}
   background:linear-gradient(135deg,rgba(255,122,18,.95),rgba(138,43,226,.92));border:2px solid #ffb25a;color:#fff;overflow:hidden;
   box-shadow:0 0 0 2px rgba(26,11,51,.6),0 8px 26px rgba(255,122,18,.45);animation:evin .6s cubic-bezier(.2,1.2,.3,1) both,evglow 2.2s ease-in-out .6s infinite}
 .evcard::after{content:'';position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-18deg);animation:evsweep 3.4s ease-in-out 1s infinite}
+.evcard.trick{background:linear-gradient(135deg,#ff8a1a,#ff4fa8 55%,#7a2be2)}
+.evcard.trick.live{background:linear-gradient(135deg,#ffb34d,#ff4fa8 60%,#9a3bff)}
 .evcard.candy{background:linear-gradient(135deg,#ff8fd0,#7fd0ff);border-color:#fff;box-shadow:0 0 0 2px rgba(26,11,51,.5),0 8px 26px rgba(255,143,208,.55)}
 .evcard.candy{color:#2a1245}
 .evcard.candy .evt b{text-shadow:none}
@@ -571,7 +573,12 @@ var SEASONS=[
    skyTop:'#9fd8ff',skyBot:'#ffd1f0',fog:'#ffe3f5',ground:'#ffc4e1',lane:'#8fd6c8',hemiSky:'#fff0fb',hemiGnd:'#ffb6d9',hemiI:.95,
    dir:'#fff4e6',dirI:1.1,rim:'#ff9ad8',rimI:.5,mount:'#c9b3ff',foliage:'#8ff0c6',trunk:'#fff2c2',cloud:'#ffffff',sun:'#fff1a8',sunY:40,sunS:1.3,
    pColor:'#ffd1f0',pFall:1.4,pSway:.9,pSize:.18,pAlpha:.9,fogNear:70,fogFar:280,laneRough:.5,foliageScale:1.05,cold:0,
-   w:17,zeta:1,fall:.92,wind:.2,catchM:1.06,coin:2}
+   w:17,zeta:1,fall:.92,wind:.2,catchM:1.06,coin:2},
+  {name:'Trick or Treat',short:'Treats',temp:12,color:'#ffb34d',note:'Candy rain, pumpkins and a spooky spider. Coins x2.',
+   skyTop:'#2a1050',skyBot:'#ff8fd0',fog:'#c86ad0',ground:'#5a2a7a',lane:'#7a3fa8',hemiSky:'#ffb3e6',hemiGnd:'#5a2a7a',hemiI:.9,
+   dir:'#ffd0f0',dirI:1.05,rim:'#ff6fd0',rimI:.65,mount:'#ff9ad0',foliage:'#ff8a1a',trunk:'#3a1a4a',cloud:'#ffc4ea',sun:'#ffd04a',sunY:22,sunS:2,
+   pColor:'#ffb34d',pFall:1.2,pSway:1.1,pSize:.2,pAlpha:.9,fogNear:46,fogFar:200,laneRough:.5,foliageScale:1,cold:0,
+   w:17,zeta:1,fall:.95,wind:.3,catchM:1.05,coin:2}
 ];
 var COLS=['skyTop','skyBot','fog','ground','lane','hemiSky','hemiGnd','dir','rim','mount','foliage','trunk','cloud','sun','pColor'];
 var NUMS=['hemiI','dirI','rimI','sunY','sunS','pFall','pSway','pSize','pAlpha','fogNear','fogFar','laneRough','foliageScale','cold','w','zeta','fall','wind','catchM','coin'];
@@ -585,6 +592,7 @@ var ENV=SEASONS.map(mkEnv);
 /* timed events on the player's clock. s = season index, h = start hour, len = hours, date = only that day (omit for daily) */
 var EVENTS=[
   {key:'halloween',s:4,h:19,len:1,name:'Halloween Hour',liveSub:'Pumpkin burgers, purple and green bonus, coins x2',sub:'Pumpkin burgers, a spooky spider and coins x2',pre:15},
+  {key:'trick',s:6,h:14,len:1,date:'2026-10-30',name:'Trick or Treat',liveSub:'Candy rain, pumpkins and coins x2',sub:'Candy rain, pumpkins, a spooky spider and coins x2',pre:0,tag:'Today only'},
   {key:'candy',s:5,h:14,len:1,date:'2026-10-29',name:'Candy Afternoon',liveSub:'Sweet pastel burgers, sugar rain and coins x2',sub:'Pastel burgers, candy rain and coins x2',pre:0,tag:'Today only'}
 ];
 var SPECIAL_DAY='2026-10-28';
@@ -1288,6 +1296,7 @@ var BM={};
     var gold=k==='gold',burnt=k==='burnt';
     function mk(c,r){
       if(k==='shine'||k==='blue'||k==='pink')return std(c,.16,.9,{emissive:k==='blue'?'#4a1a8a':k==='pink'?'#1f7a10':'#a34200',emissiveIntensity:.55});
+      if(k==='tt')return std(c,.25,.3,{emissive:'#b34a00',emissiveIntensity:.35});
       if(k==='candy'||k==='cblue'||k==='cpink')return std(c,.3,.15,{emissive:c,emissiveIntensity:.22});
       if(gold)return std(c,.28,.7,{emissive:'#8a5a00',emissiveIntensity:.45});
       var o=std(c,r,0);
@@ -1301,6 +1310,7 @@ var BM={};
   set('shine','#ff8f1f','#6b2d12','#ffd04a','#c8321a','#7bd23a','#fff1c9');
   set('blue','#b06bff','#4a1a8a','#e6ccff','#8a3dff','#d0a8ff','#f4eaff');
   set('pink','#7dff4a','#1f6a14','#d9ffc4','#3fc41a','#a8ff80','#f0ffe8');
+  set('tt','#ffa24a','#6b3a2a','#ffe08a','#ff6fb8','#b8f5d6','#fff1c9');
   set('candy','#ffb3dd','#8a5a44','#fff1a8','#ff8fb8','#b8f5d6','#ffffff');
   set('cblue','#9fdcff','#4a7fb8','#e4f5ff','#6fb8ff','#c4ecff','#ffffff');
   set('cpink','#ffa0d6','#b8387f','#ffe0f1','#ff6fb8','#ffc4e6','#ffffff');
@@ -1315,6 +1325,7 @@ var BM={};
   BM.glowCandy=new T.SpriteMaterial({map:GLOW,color:'#ff9ad0',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.55,fog:false});
   BM.glowCBlue=new T.SpriteMaterial({map:GLOW,color:'#7fd0ff',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.6,fog:false});
   BM.glowCPink=new T.SpriteMaterial({map:GLOW,color:'#ff8fd0',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.6,fog:false});
+  BM.glowTT=new T.SpriteMaterial({map:GLOW,color:'#ff9a6a',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.6,fog:false});
   BM.glowBlue=new T.SpriteMaterial({map:GLOW,color:'#a04aff',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.7,fog:false});
   BM.glowPink=new T.SpriteMaterial({map:GLOW,color:'#6aff3a',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.7,fog:false});
   BM.glowBurnt=new T.SpriteMaterial({map:GLOW,color:'#ff3030',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:.55,fog:false});
@@ -1330,7 +1341,7 @@ var seedPos=(function(){
 function makeBurger(kind,frost,shiny){
   var candyEv=!!(evCur&&evCur.s===5),k2=kind;
   if(candyEv){if(kind==='blue')k2='cblue';else if(kind==='pink')k2='cpink';else if(kind==='norm'&&shiny)k2='candy'}
-  else if(kind==='norm'&&shiny)k2='shine';
+  else if(kind==='norm'&&shiny)k2=evCur&&evCur.s===6?'tt':'shine';
   var m=BM[k2],g=new T.Group(),a;
   a=new T.Mesh(BG.bunB,m.bun);a.scale.y=.45;a.position.y=-.16;g.add(a);
   a=new T.Mesh(BG.patty,m.patty);a.position.y=-.09;g.add(a);
@@ -1357,7 +1368,7 @@ function makeBurger(kind,frost,shiny){
   }
   if(frost){a=new T.Mesh(BG.snow,BM.snow);a.scale.set(1.03,.82,1.03);a.position.y=.13;g.add(a)}
   if(kind==='gold'||kind==='burnt'||kind==='blue'||kind==='pink'||shiny){
-    var sp=new T.Sprite(kind==='burnt'?BM.glowBurnt:kind==='gold'?BM.glowGold:({blue:BM.glowBlue,pink:BM.glowPink,cblue:BM.glowCBlue,cpink:BM.glowCPink,candy:BM.glowCandy}[k2]||BM.glowShine));sp.scale.set(shiny&&kind==='norm'?1.9:2.3,shiny&&kind==='norm'?1.9:2.3,1);sp.position.y=.1;g.add(sp);
+    var sp=new T.Sprite(kind==='burnt'?BM.glowBurnt:kind==='gold'?BM.glowGold:({blue:BM.glowBlue,pink:BM.glowPink,cblue:BM.glowCBlue,cpink:BM.glowCPink,candy:BM.glowCandy,tt:BM.glowTT}[k2]||BM.glowShine));sp.scale.set(shiny&&kind==='norm'?1.9:2.3,shiny&&kind==='norm'?1.9:2.3,1);sp.position.y=.1;g.add(sp);
   }
   return g;
 }
@@ -1470,7 +1481,7 @@ function applyEnv(){
     var m=foliageMeshes[i],b=m.userData.base,k=b*cur.foliageScale;
     m.scale.set(k,k*(m.userData.by?1.15:1),k);
   }
-  pumpkins.visible=seasonIdx===4;candies.visible=seasonIdx===5;
+  pumpkins.visible=seasonIdx===4||seasonIdx===6;candies.visible=seasonIdx===5||seasonIdx===6;
   if(candies.visible){
     var cdt=Math.min(.05,Math.max(0,t-(applyEnv.lt||t)));applyEnv.lt=t;
     for(var ci=0;ci<candyItems.length;ci++){
@@ -1720,7 +1731,7 @@ function submitScore(){
   save.name=nm;persist();
   var rn=run,btn=$('#lbSave');
   rn.saving=true;btn.disabled=true;
-  lbSubmit(nm,rn.coins,SEASONS[seasonIdx].name).then(function(res){
+  lbSubmit(nm,rn.coins,SEASONS[seasonIdx].short||SEASONS[seasonIdx].name).then(function(res){
     rn.saving=false;btn.disabled=false;
     rn.submitted=true;rn.rank=res.rank<=20?res.rank:0;rn.shared=res.shared;freshId=res.id;
     sfx.buy();
@@ -1795,6 +1806,7 @@ function updateHud(){
 }
 var EV_PUMPKIN='<svg class="evpk" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 9c1-4 4-6 7-6" fill="none" stroke="#5fbf3a" stroke-width="4" stroke-linecap="round"/><ellipse cx="24" cy="28" rx="20" ry="16" fill="#ff7a12"/><ellipse cx="14" cy="28" rx="8" ry="15" fill="#ff9a2a" opacity=".55"/><ellipse cx="34" cy="28" rx="8" ry="15" fill="#d95f00" opacity=".45"/><path d="M13 24l6 3-6 3zM35 24l-6 3 6 3zM15 35q9 7 18 0l-3-2-3 2-3-2-3 2-3-2z" fill="#2a0f3a"/></svg>';
 var EV_CANDY='<svg class="evpk" viewBox="0 0 48 48" aria-hidden="true"><path d="M2 14l12 10L2 34z" fill="#ffb3dd"/><path d="M46 14L34 24l12 10z" fill="#ffb3dd"/><circle cx="24" cy="24" r="14" fill="#ff7fc2"/><path d="M14 16c4 2 6 6 6 10s-2 7-4 9M24 11c4 3 6 8 6 13s-2 9-5 13M33 15c-3 3-4 6-4 10s1 7 3 10" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"/></svg>';
+var EV_TRICK='<svg class="evpk" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3L31 19H17z" fill="#fff3d6"/><path d="M17 19H31L37 34H11z" fill="#ff9a2a"/><path d="M11 34H37L43 45H5z" fill="#ffd23f"/></svg>';
 function updateMenu(){
   $('#mCoins').textContent=save.coins;
   $('#mBest').textContent=save.best>0?'Best run: '+save.best+' coins':'Your first run is waiting';
@@ -1802,10 +1814,10 @@ function updateMenu(){
   ec.hidden=!ev;
   if(ev){
     var live=evOn&&evCur===ev||(evOn&&evCur&&evCur.key===ev.key);
-    ec.className='evcard'+(live?' live':'')+(ev.key==='candy'?' candy':'');
+    ec.className='evcard'+(live?' live':'')+(ev.key==='candy'?' candy':'')+(ev.key==='trick'?' trick':'');
     var tag=ev.tag||(ev.key==='halloween'&&todayKey()===SPECIAL_DAY?'Halloween special':'');
     $('#evTag').hidden=!tag;$('#evTag').textContent=tag;
-    $('#evIcon').innerHTML=ev.key==='candy'?EV_CANDY:EV_PUMPKIN;
+    $('#evIcon').innerHTML=ev.key==='candy'?EV_CANDY:ev.key==='trick'?EV_TRICK:EV_PUMPKIN;
     $('#evTitle').textContent=live?ev.name+' is live!':ev.name;
     $('#evSub').textContent=live?ev.liveSub:ev.sub;
     $('#evTime').textContent=live?'Ends in '+eventLeft(ev):(ev.h>=18?'Tonight':'Today')+' at '+ev.h+':00 · starts in '+eventIn(ev);
@@ -1842,7 +1854,7 @@ setInterval(function(){if(mode==='menu'&&curScreen==='menu')updateMenu()},20000)
     st.u=0;st.pauseU=.25+Math.random()*.5;st.pause=0;st.speed=95+Math.random()*60;st.amp=18+Math.random()*16;st.on=true;
   }
   window.__spiderStep=function(dt){
-    var show=evOn&&evCur.s===4&&!paused&&(curScreen==='menu'||curScreen==='play');
+    var show=evOn&&(evCur.s===4||evCur.s===6)&&!paused&&(curScreen==='menu'||curScreen==='play');
     if(!show){if(!el.hidden)el.hidden=true;st.on=false;return}
     if(!st.on){
       st.wait-=dt;
