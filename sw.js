@@ -1,5 +1,5 @@
 /* LO's Burgers service worker: opens offline after the first visit */
-var VERSION='lo-burgers-v17';
+var VERSION='lo-burgers-v18';
 var SHELL=['./','index.html','manifest.webmanifest','icons/apple-touch-icon.png','icons/icon-192.png','icons/icon-512.png'];
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(VERSION).then(function(c){return c.addAll(SHELL)}).then(function(){return self.skipWaiting()}));
