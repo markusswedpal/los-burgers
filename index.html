@@ -251,6 +251,9 @@ button:focus-visible{outline:3px solid var(--cool);outline-offset:3px}
 .lb-form input:focus-visible{outline:3px solid var(--cool);outline-offset:1px}
 .lb-form .btn{width:auto;min-height:46px;padding:8px 18px;font-size:1.1rem}
 #board{background:radial-gradient(120% 60% at 50% 0%,#33198a 0%,var(--bg) 60%);padding-top:12px}
+.tabs{display:flex;gap:8px;margin-top:10px}
+.tab{flex:1;min-height:40px;border:2px solid var(--line,#3a2a7a);border-radius:10px;background:var(--panel);color:var(--muted);font-family:var(--f-display);font-size:1rem;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
+.tab.on{background:var(--coin);color:#2a1a00;border-color:var(--coin)}
 .board-note{margin:10px 0;font-size:.8rem;color:var(--muted)}
 .rows{
   flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;list-style:none;margin:0;
@@ -452,8 +455,9 @@ body{position:fixed;inset:0;width:100%;touch-action:manipulation;-webkit-touch-c
   <section id="board" class="screen" hidden>
     <div class="shop-head gut">
       <button class="btn ghost small" data-act="back" aria-label="Back">Back</button>
-      <h2 class="shop-title">Top 20</h2>
+      <h2 class="shop-title">Leaderboard</h2>
     </div>
+    <div class="tabs gut" id="boardTabs" role="tablist"><button type="button" class="tab on" data-tab="all" role="tab" aria-selected="true">All-time</button><button type="button" class="tab" data-tab="day" role="tab" aria-selected="false">Today</button></div>
     <p class="board-note gut" id="boardNote">Best runs, by player name. Scores are kept on this device.</p>
     <ol class="rows gut" id="boardRows"></ol>
   </section>
@@ -591,15 +595,15 @@ function mkEnv(d){
 var ENV=SEASONS.map(mkEnv);
 /* timed events on the player's clock. s = season index, h = start hour, len = hours, date = only that day (omit for daily) */
 var EVENTS=[
-  {key:'halloween',s:4,h:19,len:1,name:'Halloween Hour',liveSub:'Pumpkin burgers, purple and green bonus, coins x2',sub:'Pumpkin burgers, a spooky spider and coins x2',pre:15},
-  {key:'trick',s:6,h:14,len:1,date:'2026-10-30',name:'Trick or Treat',liveSub:'Candy rain, pumpkins and coins x2',sub:'Candy rain, pumpkins, a spooky spider and coins x2',pre:0,tag:'Today only'},
+  {key:'halloween',s:4,h:19,len:1,name:'Halloween Hour',liveSub:'Pumpkin burgers, purple and green bonus, coins x2',sub:'Pumpkin burgers, a spooky spider and coins x2',pre:15,skip:['2026-10-31']},
+  {key:'trick',s:6,h:21,len:1,date:'2026-10-31',name:'Trick or Treat',liveSub:'Candy rain, pumpkins and coins x2',sub:'Candy rain, pumpkins, a spooky spider and coins x2',pre:0,tag:'Today only'},
   {key:'candy',s:5,h:14,len:1,date:'2026-10-29',name:'Candy Afternoon',liveSub:'Sweet pastel burgers, sugar rain and coins x2',sub:'Pastel burgers, candy rain and coins x2',pre:0,tag:'Today only'}
 ];
 var SPECIAL_DAY='2026-10-28';
 function todayKey(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function eventNow(){
   var n=new Date(),h=n.getHours(),k=todayKey();
-  for(var i=0;i<EVENTS.length;i++){var e=EVENTS[i];if((!e.date||e.date===k)&&h>=e.h&&h<e.h+e.len)return e}
+  for(var i=0;i<EVENTS.length;i++){var e=EVENTS[i];if(e.skip&&e.skip.indexOf(k)>=0)continue;if((!e.date||e.date===k)&&h>=e.h&&h<e.h+e.len)return e}
   return null;
 }
 function eventOn(){return !!eventNow()}
@@ -615,6 +619,7 @@ function eventCard(){
   var n=new Date(),h=n.getHours(),k=todayKey(),best=null;
   for(var i=0;i<EVENTS.length;i++){
     var e=EVENTS[i];
+    if(e.skip&&e.skip.indexOf(k)>=0)continue;
     if(e.date){if(e.date!==k||h>=e.h)continue}
     else{var spec=e.key==='halloween'&&k===SPECIAL_DAY;if(!(spec?h<e.h:(h>=e.pre&&h<e.h)))continue}
     if(!best||e.h<best.h)best=e;
@@ -636,20 +641,29 @@ function fmtTemp(t){return (t<0?'−':'')+Math.abs(t)+'°C'}
 var SB_URL='https://pvvgkrbxsaqngekxqlki.supabase.co';
 var SB_KEY='sb_publishable_5EQnuvdJRdYoZ2kFAj_Z8A__8AoeaZH';
 var BKEY='burgerrain.board.v1',DKEY='burgerrain.device.v1';
-var lbLocal=[],lbShared=[],lbLive=false,lbLoading=false,freshId=null,deviceId='';
+var lbTab='all',lbDay=[],lbLocal=[],lbShared=[],lbLive=false,lbLoading=false,freshId=null,deviceId='';
 try{
   var lraw=JSON.parse(localStorage.getItem(BKEY)||'[]');
-  if(Array.isArray(lraw))lbLocal=lraw.filter(function(e){return e&&typeof e.name==='string'&&typeof e.score==='number'}).slice(0,20);
+  if(Array.isArray(lraw))lbLocal=lraw.filter(function(e){return e&&typeof e.name==='string'&&typeof e.score==='number'}).slice(0,100);
 }catch(e){}
 try{deviceId=localStorage.getItem(DKEY)||''}catch(e){}
 if(!/^[0-9a-f-]{36}$/.test(deviceId)){
   deviceId=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16)});
   try{localStorage.setItem(DKEY,deviceId)}catch(e){}
 }
-function lbList(){return lbLive?lbShared:lbLocal}
+function dayKeyOf(ms){try{return new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Stockholm'}).format(new Date(ms))}catch(e){var d=new Date(ms);return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}}
+function lbListFor(tab){
+  if(tab==='day'){
+    if(lbLive)return lbDay;
+    var k=dayKeyOf(Date.now());return lbLocal.filter(function(e){return dayKeyOf(e.d)===k}).slice(0,10);
+  }
+  return lbLive?lbShared:lbLocal;
+}
+function lbList(){return lbListFor('all')}
 function lbPersist(){try{localStorage.setItem(BKEY,JSON.stringify(lbLocal))}catch(e){}}
 function cleanName(s){return String(s||'').replace(/[\u0000-\u001f<>]/g,'').replace(/\s+/g,' ').trim().slice(0,14)}
-function lbRank(score){var l=lbList(),n=0;for(var i=0;i<l.length;i++)if(l[i].score>=score)n++;return n+1}
+function lbRankIn(l,score){var n=0;for(var i=0;i<l.length;i++)if(l[i].score>=score)n++;return n+1}
+function lbRank(score){return lbRankIn(lbList(),score)}
 function sbFetch(path,opts){
   var ctl=window.AbortController?new AbortController():null,tm=setTimeout(function(){if(ctl)ctl.abort()},8000);
   opts=opts||{};opts.headers=Object.assign({apikey:SB_KEY},opts.headers||{});
@@ -660,11 +674,16 @@ function sbFetch(path,opts){
     return r.json();
   },function(e){clearTimeout(tm);throw e});
 }
-/* top 20 from the shared table; resolves true when the server answered */
+/* top 100 of all time + today's top 10 from the shared tables; resolves true when the server answered */
+function lbMap(rows){return (Array.isArray(rows)?rows:[]).map(function(r){return {id:'s'+r.id,name:String(r.name),score:Number(r.score),season:r.season||'',d:Date.parse(r.created_at)||Date.now()}})}
 function lbRefresh(){
   lbLoading=true;
-  return sbFetch('/rest/v1/scores?select=id,name,score,season,created_at&order=score.desc,id.asc&limit=20').then(function(rows){
-    lbShared=(Array.isArray(rows)?rows:[]).map(function(r){return {id:'s'+r.id,name:String(r.name),score:Number(r.score),season:r.season||'',d:Date.parse(r.created_at)||Date.now()}});
+  var pa=sbFetch('/rest/v1/scores?select=id,name,score,season,created_at&order=score.desc,id.asc&limit=100');
+  var pd=sbFetch('/rest/v1/rpc/top_today',{method:'POST',headers:{'Content-Type':'application/json'},body:'{"p_limit":10}'}).then(lbMap,function(){return null});
+  return Promise.all([pa,pd]).then(function(res){
+    lbShared=lbMap(res[0]);
+    if(res[1])lbDay=res[1];
+    else{var k=dayKeyOf(Date.now());lbDay=lbShared.filter(function(e){return dayKeyOf(e.d)===k}).slice(0,10)}
     lbLive=true;lbLoading=false;return true;
   }).catch(function(){lbLive=false;lbLoading=false;return false});
 }
@@ -673,8 +692,9 @@ function lbAddLocal(name,score,seasonName){
   lbLocal.push(e);
   lbLocal.sort(function(a,b){return b.score-a.score||a.d-b.d});
   var rank=lbLocal.indexOf(e)+1;
-  lbLocal=lbLocal.slice(0,20);lbPersist();
-  return {id:e.id,rank:rank,shared:false};
+  var dk=dayKeyOf(e.d),dayRank=lbLocal.filter(function(x){return dayKeyOf(x.d)===dk}).indexOf(e)+1;
+  lbLocal=lbLocal.slice(0,100);lbPersist();
+  return {id:e.id,rank:rank,dayRank:dayRank,shared:false};
 }
 /* saves one score; shared when the server is reachable, otherwise on this device */
 function lbSubmit(name,score,seasonName){
@@ -684,7 +704,11 @@ function lbSubmit(name,score,seasonName){
     body:JSON.stringify({p_name:name,p_score:score,p_season:seasonName,p_device:deviceId})
   }).then(function(rows){
     var r=Array.isArray(rows)?rows[0]:rows;
-    return lbRefresh().then(function(){return {id:'s'+r.out_id,rank:r.out_rank,shared:true}});
+    return lbRefresh().then(function(){
+      var dr=r.out_day_rank;
+      if(dr==null){var ix=-1;for(var i=0;i<lbDay.length;i++)if(lbDay[i].id==='s'+r.out_id)ix=i;dr=ix>=0?ix+1:99}
+      return {id:'s'+r.out_id,rank:r.out_rank,dayRank:dr,shared:true};
+    });
   });
 }
 
@@ -1716,13 +1740,17 @@ function showEntry(){
   $('#lbName').value=save.name||'';
   if(!run||run.coins<=0){msg.textContent='Catch some burgers to get on the board.';msg.className='lb-msg';form.hidden=true;return}
   if(run.submitted){
-    msg.textContent=run.rank?(run.shared?'Saved. You are #'+run.rank+' on the shared leaderboard.':'Saved on this device. You are #'+run.rank+'.'):'Saved.';
+    var bits=[];if(run.dayRank)bits.push('#'+run.dayRank+' today');if(run.rank)bits.push('#'+run.rank+' all-time');
+    msg.textContent=bits.length?(run.shared?'Saved. You are '+bits.join(' and ')+' on the shared leaderboard.':'Saved on this device. You are '+bits.join(' and ')+'.'):'Saved.';
     msg.className='lb-msg good';form.hidden=true;return;
   }
   if(run.checking){msg.textContent='Checking the leaderboard...';msg.className='lb-msg';form.hidden=true;return}
-  var l=lbList(),rk=lbRank(run.coins),where=lbLive?'':' (This device only.)';
-  if(rk<=20){msg.textContent=(rk===1?'New number one! ':'Top 20! ')+'You would be #'+rk+'. Add your name.'+where;msg.className='lb-msg good';form.hidden=false}
-  else{msg.textContent='Not in the top 20 yet. #20 has '+l[19].score+' coins.';msg.className='lb-msg';form.hidden=true}
+  var la=lbListFor('all'),ld=lbListFor('day'),ra=lbRankIn(la,run.coins),rd=lbRankIn(ld,run.coins),where=lbLive?'':' (This device only.)';
+  var inA=ra<=100,inD=rd<=10;
+  if(inA||inD){
+    var parts=[];if(inD)parts.push('#'+rd+' today');if(inA)parts.push('#'+ra+' all-time');
+    msg.textContent=(ra===1?'New number one! ':'You made the board! ')+'You would be '+parts.join(' and ')+'. Add your name.'+where;msg.className='lb-msg good';form.hidden=false;
+  }else{msg.textContent='Not on the boards yet. Today\'s #10 has '+ld[9].score+' coins.';msg.className='lb-msg';form.hidden=true}
 }
 function submitScore(){
   if(!run||run.submitted||run.coins<=0||run.saving||run.checking)return;
@@ -1733,20 +1761,22 @@ function submitScore(){
   rn.saving=true;btn.disabled=true;
   lbSubmit(nm,rn.coins,SEASONS[seasonIdx].short||SEASONS[seasonIdx].name).then(function(res){
     rn.saving=false;btn.disabled=false;
-    rn.submitted=true;rn.rank=res.rank<=20?res.rank:0;rn.shared=res.shared;freshId=res.id;
+    rn.submitted=true;rn.rank=res.rank<=100?res.rank:0;rn.dayRank=res.dayRank&&res.dayRank<=10?res.dayRank:0;rn.shared=res.shared;freshId=res.id;
     sfx.buy();
-    if(run===rn&&mode==='over'){showEntry();openBoard()}
+    if(run===rn&&mode==='over'){showEntry();openBoard(rn.dayRank?'day':'all')}
   }).catch(function(err){
     rn.saving=false;btn.disabled=false;
     toast(/slow down/i.test(String(err&&err.message))?'Slow down. Try again in a minute.':'Could not save. Check your connection and try again.');
   });
 }
 function renderBoard(){
-  var ol=$('#boardRows'),list=lbList();ol.textContent='';
-  $('#boardNote').textContent=lbLive?'Top 20 players. Everyone who plays sees this list.':(lbLoading?'Loading the shared leaderboard...':'Offline: showing scores from this device only.');
+  var ol=$('#boardRows'),list=lbListFor(lbTab);ol.textContent='';
+  var tb=document.querySelectorAll('#boardTabs .tab');
+  for(var ti=0;ti<tb.length;ti++){var on=tb[ti].getAttribute('data-tab')===lbTab;tb[ti].classList.toggle('on',on);tb[ti].setAttribute('aria-selected',on?'true':'false')}
+  $('#boardNote').textContent=lbLive?(lbTab==='day'?'Today\'s top 10. Starts fresh every night at midnight (Stockholm time).':'Top 100 players of all time. Everyone who plays sees this list.'):(lbLoading?'Loading the shared leaderboard...':'Offline: showing scores from this device only.');
   if(!list.length){
     var li0=document.createElement('li');li0.className='empty';
-    li0.textContent=lbLoading?'Loading the leaderboard...':'No scores yet. Finish a run and add your name.';
+    li0.textContent=lbLoading?'Loading the leaderboard...':(lbTab==='day'?'No scores yet today. Be the first!':'No scores yet. Finish a run and add your name.');
     ol.appendChild(li0);return;
   }
   var me=cleanName(save.name).toLowerCase(),freshEl=null;
@@ -1767,7 +1797,8 @@ function renderBoard(){
   });
   if(freshEl)setTimeout(function(){try{freshEl.scrollIntoView({block:'center'})}catch(e){}},50);
 }
-function openBoard(){
+function openBoard(tab){
+  if(tab)lbTab=tab;
   setScreen('board');$('#boardRows').scrollTop=0;
   var p=lbRefresh();renderBoard();
   p.then(function(){if(curScreen==='board')renderBoard()});
@@ -2053,7 +2084,7 @@ function update(dt){
 
   var fm=cur.fall*(mode==='play'&&run.fx.slow>0?.5:1),wind=cur.wind,cr=cur.catchM,cy=HR*1.45,mag=mode==='play'&&run.fx.magnet>0;
   for(i=items.length-1;i>=0;i--){
-    it=items[i];
+    it=items[i];if(!it)continue;
     it.y-=it.vy*fm*dt;
     it.x+=wind*Math.sin(t*1.2+it.phase)*dt*1.4;
     if(mag&&it.kind!=='burnt'&&!it.bolt&&it.y<spawnY-1)it.x+=(hero.x-it.x)*Math.min(1,dt*3.5);
@@ -2157,6 +2188,7 @@ $('#app').addEventListener('click',function(e){
   else if(a==='back')goBack();
 });
 $('#lbSave').addEventListener('click',submitScore);
+$('#boardTabs').addEventListener('click',function(e){var b=e.target.closest?e.target.closest('.tab'):null;if(!b)return;lbTab=b.getAttribute('data-tab')==='day'?'day':'all';$('#boardRows').scrollTop=0;renderBoard()});
 $('#lbName').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submitScore()}});
 $('#pauseBtn').addEventListener('click',function(){setPaused(true)});
 /* app switching: pause and bank coins when the app is hidden, sleep audio, never auto-resume */
