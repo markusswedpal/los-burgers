@@ -991,7 +991,7 @@ var moonMat=new T.MeshBasicMaterial({color:'#eef3ff',transparent:true,opacity:0,
 var moon=new T.Mesh(new T.SphereGeometry(1,20,14),moonMat);moon.position.set(-46,64,-168);moon.scale.setScalar(7);moon.visible=false;farBg.add(moon);
 var moonGlowMat=new T.SpriteMaterial({map:GLOW,color:'#a9c0ff',blending:T.AdditiveBlending,depthWrite:false,transparent:true,opacity:0,fog:false});
 var moonGlow=new T.Sprite(moonGlowMat);moonGlow.position.set(-46,64,-170);moonGlow.scale.setScalar(60);moonGlow.visible=false;farBg.add(moonGlow);
-var starsMat=new T.PointsMaterial({color:'#ffffff',size:2.4,sizeAttenuation:false,transparent:true,opacity:0,depthWrite:false,fog:false});
+var starsMat=new T.PointsMaterial({color:'#ffffff',size:3.4,sizeAttenuation:false,transparent:true,opacity:0,depthWrite:false,fog:false});
 var starsGeo=new T.BufferGeometry();
 (function(){
   var n=420,pos=new Float32Array(n*3),i;
@@ -1002,7 +1002,8 @@ var starsGeo=new T.BufferGeometry();
   starsGeo.setAttribute('position',new T.BufferAttribute(pos,3));
 })();
 var stars=new T.Points(starsGeo,starsMat);stars.frustumCulled=false;stars.visible=false;stars.renderOrder=-9;scene.add(stars);
-var nightF=0,NT={top:new T.Color('#050b2e'),bot:new T.Color('#1c2d6b'),fog:new T.Color('#16224f'),hs:new T.Color('#5c74c8'),hg:new T.Color('#1c2350'),dir:new T.Color('#9fb6ff'),rim:new T.Color('#6a8aff')};
+var heroGlow=new T.PointLight(0xa8c4ff,0,30);scene.add(heroGlow);
+var nightF=0,NT={top:new T.Color('#16217a'),bot:new T.Color('#5a6fe0'),fog:new T.Color('#3a4fb0'),hs:new T.Color('#b4c6ff'),hg:new T.Color('#4a58a8'),dir:new T.Color('#c8d8ff'),rim:new T.Color('#9ab4ff')};
 function nightTarget(){
   if(evOn||seasonIdx>=4)return 0;
   var h=new Date().getHours();
@@ -1050,7 +1051,7 @@ var FFN=44,ff=makePoints(FFN),ffd=[];
   ff.mat.blending=T.AdditiveBlending;
   for(var i=0;i<FFN;i++){
     ff.pos[i*3]=rnd(-17,17);ff.pos[i*3+1]=rnd(.5,6);ff.pos[i*3+2]=rnd(-22,3);
-    ff.col[i*3]=.85;ff.col[i*3+1]=1;ff.col[i*3+2]=.4;ff.size[i]=rnd(.5,.9);
+    ff.col[i*3]=.85;ff.col[i*3+1]=1;ff.col[i*3+2]=.4;ff.size[i]=rnd(1,1.7);
     ffd.push({ph:rnd(0,TAU),sp:rnd(.4,1),cx:ff.pos[i*3],cy:ff.pos[i*3+1],cz:ff.pos[i*3+2]});
   }
   ff.pts.visible=false;scene.add(ff.pts);
@@ -1584,17 +1585,20 @@ function applyEnv(){
   if(nf>.002){
     skyMat.uniforms.top.value.lerp(NT.top,nf*.94);skyMat.uniforms.bot.value.lerp(NT.bot,nf*.9);
     scene.fog.color.lerp(NT.fog,nf*.9);hemi.color.lerp(NT.hs,nf*.8);hemi.groundColor.lerp(NT.hg,nf*.8);
-    hemi.intensity=cur.hemiI*(1-.38*nf);dirL.color.lerp(NT.dir,nf*.85);dirL.intensity=cur.dirI*(1-.62*nf);rimL.color.lerp(NT.rim,nf*.8);
-    groundMat.color.multiplyScalar(1-.5*nf);laneMat.color.multiplyScalar(1-.3*nf);mountMat.color.multiplyScalar(1-.55*nf);
-    foliageMat.color.multiplyScalar(1-.5*nf);trunkMat.color.multiplyScalar(1-.4*nf);cloudMat.color.multiplyScalar(1-.55*nf);
+    hemi.intensity=cur.hemiI*(1+.12*nf);dirL.color.lerp(NT.dir,nf*.85);dirL.intensity=cur.dirI*(1-.3*nf);rimL.color.lerp(NT.rim,nf*.8);
+    groundMat.color.multiplyScalar(1-.2*nf);laneMat.color.multiplyScalar(1-.05*nf);mountMat.color.multiplyScalar(1-.2*nf);
+    foliageMat.color.multiplyScalar(1-.15*nf);trunkMat.color.multiplyScalar(1-.15*nf);cloudMat.color.multiplyScalar(1-.25*nf);
     scene.fog.near=cur.fogNear*(1-.2*nf);scene.fog.far=cur.fogFar*(1-.2*nf);
   }
+  /* night glow: cool self-lit tints, moonlit water, a soft light that follows the hero */
+  groundMat.emissive.setRGB(.05*nf,.09*nf,.22*nf);mountMat.emissive.setRGB(.06*nf,.08*nf,.25*nf);waterMat.emissive.setRGB(.08*nf,.2*nf,.5*nf);
+  heroGlow.intensity=nf*1.5;heroGlow.position.set(hero.x,3.5,4);
   cloudShade.color.copy(cloudMat.color).multiplyScalar(.82);
   sunMat.color.copy(cur.sun);sunGlowMat.color.copy(cur.sun);
   sunMesh.position.set(34,sunY,-150);sunMesh.scale.setScalar(8*cur.sunS);
   sunGlow.position.set(34,sunY,-152);sunGlow.scale.setScalar(70*cur.sunS);
   glitterMat.color.copy(cur.sun);glitterMat.opacity=.3*(1-nf)*(1-cur.cold*.6);glitter.visible=glitterMat.opacity>.01&&sunY>0;
-  moon.visible=moonGlow.visible=nf>.02;moonMat.opacity=nf;moonGlowMat.opacity=nf*.55;
+  moon.visible=moonGlow.visible=nf>.02;moonMat.opacity=nf;moonGlowMat.opacity=nf*.9;moonGlow.scale.setScalar(95);
   stars.visible=nf>.02;starsMat.opacity=nf*(.8+.15*Math.sin(t*3));
   wx.mat.uniforms.uTint.value.copy(cur.pColor);
   for(var i=0;i<foliageMeshes.length;i++){
