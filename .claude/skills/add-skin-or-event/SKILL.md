@@ -107,6 +107,7 @@ Ask: **"What do you want to make?"**
 4. `git status --short` may list only: the content file(s) you edited, `index.html`, `sw.js`. If anything else appears, stop: `git restore` those other files and tell a grown-up what happened.
 5. Commit on your `content/...` branch with a clear message (`content: add skin Dino Dan`), push the branch, and open a pull request with `gh pr create`
    (title: what it is; body: the child's idea in one or two sentences, and "Only content files changed").
+   If `gh pr create` fails, use `gh api repos/{owner}/{repo}/pulls -f title=... -f head=content/<name> -f base=main -f body=...`.
    Never push to `main`. Never merge the pull request.
 
 ## Step 4: finish
