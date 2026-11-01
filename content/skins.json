@@ -18,5 +18,6 @@
 {"id":"lise","name":"Lise","rarity":"epic","price":650,"body":"#b58cff","accent":"#3a1a00","eye":"#fffbe0","acc":"hair+pigtails+bow","c2":"#ffe14a"},
 {"id":"lucas","name":"Lucas","rarity":"legendary","price":1500,"body":"#ff6f5a","accent":"#6b4423","eye":"#c8803a","acc":"hair+quiff","c2":"#ffffff"},
 {"id":"ejlert","name":"Ejlert","rarity":"exclusive","price":20000,"body":"#7fe9ff","accent":"#2a9fd0","eye":"#ffffff","acc":"hair+spikes+diamonds","c2":"#e6fbff","trail":["#9fe9ff","#ffffff","#c9b8ff"],"sparkle":true,"metal":0.9,"gem":true},
-{"id":"copsven","name":"Officer Sven","kind":"baby","rarity":"legendary","price":1800}
+{"id":"copsven","name":"Officer Sven","kind":"baby","rarity":"legendary","price":1800},
+{"id":"dino-dan","name":"Dino Dan","rarity":"epic","price":700,"body":"#3fbf5a","accent":"#145a28","eye":"#fff3a8","acc":"spikes+horns","c2":"#ff9a2a"}
 ]
