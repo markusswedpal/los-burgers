@@ -1,6 +1,6 @@
 [
 {"id":"bun","name":"Rookie Bruiser","rarity":"common","price":0,"body":"#f2b45a","accent":"#4a2a18","eye":"#fff1b0","acc":"headband","c2":"#e5252f"},
-{"id":"pickle","name":"Pickle Brawler","rarity":"common","price":40,"body":"#6fd14f","accent":"#173f16","eye":"#eaff6a","acc":"mohawk","c2":"#ff4f8b"},
+{"id":"pickle","name":"Pickle Brawler","rarity":"common","price":50,"body":"#6fd14f","accent":"#173f16","eye":"#eaff6a","acc":"mohawk","c2":"#ff4f8b"},
 {"id":"ketchup","name":"Ketchup Knight","rarity":"rare","price":100,"body":"#ff4a3a","accent":"#4a1010","eye":"#ffe27a","acc":"helmet","c2":"#ffd23f","metal":0.35},
 {"id":"ninja","name":"Cheese Ninja","rarity":"rare","price":160,"body":"#ffd34a","accent":"#1b1530","eye":"#ff3b3b","acc":"ninja","c2":"#e5252f"},
 {"id":"shades","name":"Shake Shades","rarity":"rare","price":220,"body":"#ff6fbd","accent":"#2e1458","eye":"#1a0b33","acc":"shades","c2":"#35e0ff"},

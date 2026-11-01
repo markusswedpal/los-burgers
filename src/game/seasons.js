@@ -1,5 +1,5 @@
 /* ---------- seasons ---------- */
-var SEASON_LEN=18;
+var SEASON_LEN=5;
 /* Looks come from content/themes.json. 'seasons' are the four core seasons (full settings);
    'themes' are event looks. A theme picks one of the FEELS below, so a theme can change how the
    world looks but never how the game plays. */
