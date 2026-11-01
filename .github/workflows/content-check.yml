@@ -1,0 +1,28 @@
+name: content-check
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      BASE: ${{ github.base_ref }}
+      HEAD_REF: ${{ github.head_ref }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Rules still catch bad content
+        run: python3 tools/test_validate.py
+      - name: Content is valid, and nothing that already exists was changed
+        run: python3 tools/validate_content.py --against "origin/$BASE"
+      - name: content/ branches may only touch content files
+        run: |
+          case "$HEAD_REF" in content/*) ;; *) echo "Not a content branch, skipping."; exit 0;; esac
+          bad=$(git diff --name-only "origin/$BASE"...HEAD | grep -v -E '^(content/(skins|events|themes)\.json|index\.html|sw\.js)$' || true)
+          if [ -n "$bad" ]; then echo "These files are not allowed on a content/ branch:"; echo "$bad"; exit 1; fi
+      - name: index.html and sw.js are exactly what the build makes
+        run: |
+          python3 tools/build.py
+          git diff --exit-code -- index.html sw.js || { echo "index.html / sw.js do not match the build. Run: python3 tools/build.py"; exit 1; }

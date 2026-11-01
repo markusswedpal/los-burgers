@@ -1,0 +1,19 @@
+[
+ "game/core.js",
+ "game/content.js",
+ "game/save.js",
+ "game/seasons.js",
+ "game/leaderboard.js",
+ "game/audio.js",
+ "render/world.js",
+ "render/models.js",
+ "game/state.js",
+ "render/env.js",
+ "ui/pops.js",
+ "game/flow.js",
+ "ui/screens.js",
+ "ui/shop.js",
+ "game/loop.js",
+ "ui/input.js",
+ "game/boot.js"
+]

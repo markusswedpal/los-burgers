@@ -1,0 +1,8 @@
+# Everything that is not content needs a review from the owner.
+/src/ @markusswedpal
+/tools/ @markusswedpal
+/.github/ @markusswedpal
+/.claude/ @markusswedpal
+/supabase/ @markusswedpal
+/CLAUDE.md @markusswedpal
+/content/ @markusswedpal

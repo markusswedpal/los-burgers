@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LO’s Burgers">
+<meta name="application-name" content="LO’s Burgers">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#150b33">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<title>LO’s Burgers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout concept: one full-height phone column. A three.js world sits behind
+   DOM screens (menu, HUD, game over, item shop). Chunky skewed type and
+   cut-corner rarity cards give the shop its collectible feel. Single dark
+   look by design: a game that changes sky with the seasons. */
+:root{
+  color-scheme:dark;
+  --bg:#150b33;
+  --panel:#21124f;
+  --panel2:#2f1b72;
+  --line:#4b32a3;
+  --ink:#fff6e3;
+  --muted:#b9acec;
+  --coin:#ffd23f;
+  --coin-d:#c98f00;
+  --hot:#ff4f8b;
+  --cool:#35e0ff;
+  --bad:#ff6b6b;
+  --f-display:'Lilita One','Arial Black',Impact,sans-serif;
+  --f-body:'Rubik',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+html{font-size:clamp(16px,min(2.3vw,1.5vh),22px)}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--bg) radial-gradient(ellipse at 50% 30%,#2a1660 0%,var(--bg) 70%);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:16px;
+  overflow:hidden;
+  overscroll-behavior:none;
+  -webkit-user-select:none;user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+#app{
+  position:relative;height:100%;width:100%;max-width:560px;max-width:min(860px,calc(100vh*.66));max-width:min(860px,calc(100dvh*.66));margin:0 auto;
+  box-shadow:0 0 0 1px rgba(255,255,255,.06),0 0 60px rgba(0,0,0,.45);
+  overflow:hidden;background:var(--bg);container-type:size;
+}
+#stage{position:absolute;inset:0;display:block;width:100%;height:100%;touch-action:none}
+.gut{
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;min-height:0}
+button{font:inherit;color:inherit}
+button:focus-visible{outline:3px solid var(--cool);outline-offset:3px}
+
+#frost{position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 50% 55%,rgba(200,230,255,0) 42%,rgba(205,236,255,.6) 100%)}
+#flash{position:absolute;inset:0;pointer-events:none;opacity:0;background:rgba(255,40,60,.5)}
+#pops{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.pop{
+  position:absolute;font-family:var(--f-display);white-space:nowrap;transform:translate(-50%,-50%);
+  text-shadow:-2px 0 #1a0b33,2px 0 #1a0b33,0 -2px #1a0b33,0 2px #1a0b33,0 4px 0 #1a0b33;
+  animation:rise .85s ease-out forwards;
+}
+@keyframes rise{
+  0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}
+  15%{opacity:1;transform:translate(-50%,-60%) scale(1.12)}
+  100%{opacity:0;transform:translate(-50%,-200%) scale(1)}
+}
+#banner{
+  position:absolute;left:0;right:0;top:19%;text-align:center;pointer-events:none;
+  opacity:0;transform:translateY(-14px);transition:opacity .35s,transform .35s;
+}
+#banner.show{opacity:1;transform:none}
+#banner .bn{
+  font-family:var(--f-display);text-transform:uppercase;line-height:1;transform:skewX(-8deg);
+  font-size:56px;font-size:min(17cqw,76px);
+  text-shadow:-3px 0 #1a0b33,3px 0 #1a0b33,0 -3px #1a0b33,0 3px #1a0b33,0 6px 0 #1a0b33;
+}
+#banner .bt{
+  margin:8px auto 0;max-width:22em;font-weight:600;font-size:.9rem;letter-spacing:.04em;color:#fff;
+  text-shadow:0 1px 3px rgba(10,4,30,.9),0 0 10px rgba(10,4,30,.7);padding:0 16px;
+}
+#nogl{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:24px;font-weight:600;line-height:1.5;background:var(--bg);z-index:9;
+}
+
+/* coin icon */
+.coin{
+  display:inline-block;flex:none;width:1.15em;height:1.15em;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff3a8,var(--coin) 45%,var(--coin-d));
+  box-shadow:inset 0 0 0 .12em #a56d00,inset 0 0 0 .26em rgba(255,255,255,.28);
+}
+.chip{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(21,11,51,.78);border:2px solid var(--line);
+  padding:5px 14px 5px 9px;border-radius:10px;transform:skewX(-6deg);
+  font-family:var(--f-display);font-size:1.3rem;line-height:1;
+}
+.chip b{font-weight:400;font-variant-numeric:tabular-nums}
+
+/* buttons */
+.btn{
+  font-family:var(--f-display);font-size:1.35rem;letter-spacing:.05em;text-transform:uppercase;
+  border:0;border-radius:12px;padding:14px 26px;min-height:52px;cursor:pointer;
+  transform:skewX(-6deg);transition:transform .08s,box-shadow .08s;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;
+}
+.btn.primary{background:var(--coin);color:#2a1466;box-shadow:0 6px 0 var(--coin-d),0 14px 26px rgba(0,0,0,.35)}
+.btn.primary:active{transform:skewX(-6deg) translateY(4px);box-shadow:0 2px 0 var(--coin-d)}
+.btn.ghost{background:var(--panel2);color:var(--ink);box-shadow:0 6px 0 #140a35,inset 0 0 0 2px var(--line)}
+.btn.ghost:active{transform:skewX(-6deg) translateY(4px);box-shadow:0 2px 0 #140a35,inset 0 0 0 2px var(--line)}
+.btn.big{font-size:1.9rem;min-height:66px}
+.btn.small{width:auto;font-size:1rem;min-height:42px;padding:8px 16px}
+.badge{
+  font-style:normal;font-family:var(--f-body);font-weight:600;font-size:.72rem;letter-spacing:.04em;
+  background:var(--hot);color:#fff;padding:3px 8px;border-radius:6px;
+}
+.icon-btn{
+  width:46px;height:46px;border-radius:10px;border:2px solid var(--line);
+  background:rgba(21,11,51,.78);display:grid;place-items:center;cursor:pointer;
+}
+.icon-btn svg{width:24px;height:24px;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.icon-btn.off .waves{display:none}
+.icon-btn:not(.off) .slash{display:none}
+
+/* HUD */
+#hud{position:absolute;inset:0 0 auto 0;padding-top:12px;pointer-events:none}
+.hud-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.hearts{display:flex;gap:4px}
+.heart{width:30px;height:28px;fill:var(--hot);stroke:#1a0b33;stroke-width:2;stroke-linejoin:round;transition:fill .2s,transform .2s}
+.heart.lost{fill:rgba(255,255,255,.16);transform:scale(.85)}
+.hud-sub{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;
+  font-weight:600;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:#fff;min-height:26px;
+  text-shadow:0 1px 3px rgba(10,4,30,.95),0 0 8px rgba(10,4,30,.7);
+}
+.hud-sub .temp{font-weight:600;color:var(--coin)}
+.hud-sub .temp.cold{color:var(--cool)}
+.combo{font-family:var(--f-display);font-size:1.15rem;letter-spacing:.04em;color:var(--coin);transform:skewX(-6deg);text-shadow:0 2px 0 #1a0b33}
+.baby-tag{font-family:var(--f-display);font-size:1rem;letter-spacing:.04em;text-transform:none;background:var(--hot);color:#fff;padding:3px 10px;border-radius:6px;transform:skewX(-6deg);box-shadow:0 3px 0 #a3235a;text-shadow:none}
+.baby-tag.warn{animation:blink .4s steps(2) infinite}
+@keyframes blink{50%{opacity:.35}}
+
+#hud .icon-btn{pointer-events:auto;width:42px;height:42px}
+#pause{justify-content:center;align-items:center;background:rgba(21,11,51,.74);z-index:4}
+
+/* Menu */
+#menu{padding-top:12px;gap:0;align-items:stretch}
+.top-row{display:flex;justify-content:space-between;align-items:center}
+.logo{
+  margin:3cqh 0 0;display:flex;flex-direction:column;align-items:center;
+  font-family:var(--f-display);font-weight:400;text-transform:uppercase;line-height:.88;
+  font-size:64px;font-size:min(17cqw,11cqh,92px);transform:skewX(-8deg);
+}
+.logo span:first-child{font-size:1.15em;color:var(--ink);text-shadow:0 .06em 0 var(--hot),0 .12em 0 rgba(0,0,0,.3)}
+.logo span:last-child{color:var(--coin);text-shadow:0 .06em 0 var(--coin-d),0 .12em 0 rgba(0,0,0,.3);font-size:1em}
+.tagline{
+  margin:3cqh auto 0;max-width:20em;text-align:center;font-size:.95rem;line-height:1.4;color:#fff;text-wrap:balance;
+  text-shadow:0 1px 3px rgba(10,4,30,.95),0 0 12px rgba(10,4,30,.8);
+}
+.btns{display:flex;flex-direction:column;gap:14px;margin:3cqh auto 0;width:min(100%,340px)}
+.best{
+  margin:2cqh 0 0;text-align:center;font-weight:600;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;color:#fff;
+  text-shadow:0 1px 3px rgba(10,4,30,.95),0 0 8px rgba(10,4,30,.7);
+}
+
+/* Game over */
+#over{justify-content:center;align-items:center;background:rgba(21,11,51,.7)}
+.card-big{
+  width:min(100%,380px);background:var(--panel);padding:22px 20px 24px;
+  clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,22px 100%,0 calc(100% - 22px));
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.kicker{margin:0;font-weight:600;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.big-num{display:flex;align-items:center;gap:12px;font-family:var(--f-display);font-size:4.2rem;line-height:1;color:var(--coin);text-shadow:0 4px 0 #1a0b33;transform:skewX(-6deg)}
+.big-num .coin{font-size:3.4rem}
+.newbest{margin:0;background:var(--hot);color:#fff;font-weight:600;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;padding:4px 12px;border-radius:6px}
+.stats{margin:12px 0 10px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px 16px}
+.stats div{background:rgba(255,255,255,.05);padding:10px 12px;border-radius:6px;min-width:0}
+.stats dt{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.stats dd{margin:2px 0 0;font-family:var(--f-display);font-size:1.5rem;font-variant-numeric:tabular-nums}
+
+/* Shop */
+#shop{background:radial-gradient(120% 60% at 50% 0%,#33198a 0%,var(--bg) 60%);padding-top:12px}
+.shop-head{display:flex;align-items:center;gap:12px}
+.shop-title{flex:1;margin:0;font-family:var(--f-display);font-weight:400;font-size:2rem;text-transform:uppercase;transform:skewX(-8deg);text-shadow:0 3px 0 var(--hot)}
+.deal-line{margin:10px 0 12px;font-size:.85rem;color:var(--muted);min-height:1.2em}
+.deal-line b{color:var(--ink);font-weight:600}
+.list{
+  flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-content:start;
+  padding-bottom:calc(28px + env(safe-area-inset-bottom,0px));
+}
+@container (min-width:700px){.list{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}}
+.card{
+  --cut:14px;background:var(--rc);padding:2px;min-width:0;
+  clip-path:polygon(0 0,calc(100% - var(--cut)) 0,100% var(--cut),100% 100%,var(--cut) 100%,0 calc(100% - var(--cut)));
+}
+.card-in{
+  height:100%;display:flex;flex-direction:column;background:var(--panel);
+  clip-path:polygon(0 0,calc(100% - var(--cut)) 0,100% var(--cut),100% 100%,var(--cut) 100%,0 calc(100% - var(--cut)));
+}
+.prev{position:relative;aspect-ratio:4/3;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(var(--rgb),.38))}
+.prev canvas{width:100%;height:100%;display:block}
+.deal-tag{
+  position:absolute;left:8px;top:8px;background:var(--hot);color:#fff;
+  font-family:var(--f-display);font-size:.85rem;letter-spacing:.04em;padding:2px 9px;border-radius:5px;transform:skewX(-6deg)
+}
+.meta{padding:8px 12px 0}
+.meta h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:1.12rem;line-height:1.15}
+.rar{margin:3px 0 0;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--rc);font-weight:600}
+.buy{
+  margin:auto 10px 12px;margin-top:10px;border:0;border-radius:8px;min-height:44px;cursor:pointer;
+  font-family:var(--f-display);font-size:1.1rem;letter-spacing:.03em;text-transform:uppercase;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+}
+.buy s{opacity:.55;font-size:.85em}
+.buy.price{background:var(--coin);color:#2a1466;box-shadow:0 4px 0 var(--coin-d)}
+.buy.cant{background:var(--panel2);color:var(--muted);box-shadow:inset 0 0 0 2px var(--line)}
+.buy.equip{background:var(--cool);color:#06293a;box-shadow:0 4px 0 #0a8fab}
+.buy.on{background:transparent;color:var(--cool);box-shadow:inset 0 0 0 2px var(--cool);cursor:default}
+.buy:active:not(.on){transform:translateY(3px)}
+.buy.nope{animation:nope .35s}
+@keyframes nope{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+
+/* Over-screen entry + leaderboard */
+.btn-row{display:flex;gap:10px;width:100%}
+.btn-row .btn{flex:1;padding:10px 8px;font-size:1rem;min-height:46px}
+.lb-entry{width:100%;display:flex;flex-direction:column;gap:8px;margin:4px 0 8px}
+.lb-msg{margin:0;text-align:center;font-weight:600;font-size:.85rem;line-height:1.35;color:var(--muted)}
+.lb-msg.good{color:var(--coin)}
+.lb-form{display:flex;gap:8px}
+.lb-form input{
+  flex:1;min-width:0;font:inherit;font-size:16px;font-weight:600;color:var(--ink);
+  background:rgba(255,255,255,.08);border:2px solid var(--line);border-radius:10px;padding:10px 12px;
+  -webkit-user-select:text;user-select:text;
+}
+.lb-form input:focus-visible{outline:3px solid var(--cool);outline-offset:1px}
+.lb-form .btn{width:auto;min-height:46px;padding:8px 18px;font-size:1.1rem}
+#board{background:radial-gradient(120% 60% at 50% 0%,#33198a 0%,var(--bg) 60%);padding-top:12px}
+.tabs{display:flex;gap:8px;margin-top:10px}
+.tab{flex:1;min-height:40px;border:2px solid var(--line,#3a2a7a);border-radius:10px;background:var(--panel);color:var(--muted);font-family:var(--f-display);font-size:1rem;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
+.tab.on{background:var(--coin);color:#2a1a00;border-color:var(--coin)}
+.board-note{margin:10px 0;font-size:.8rem;color:var(--muted)}
+.rows{
+  flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;list-style:none;margin:0;
+  padding-top:0;padding-bottom:calc(28px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:6px;
+}
+.row{display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:10px;background:var(--panel);border:2px solid transparent;border-radius:10px;padding:8px 12px}
+.row .rk{font-family:var(--f-display);font-size:1.2rem;text-align:center;color:var(--muted)}
+.row.r1 .rk{color:#ffd23f}
+.row.r2 .rk{color:#d6dcef}
+.row.r3 .rk{color:#e8955a}
+.row .nm{min-width:0}
+.row .nm b{display:block;font-weight:600;font-size:1rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .nm small{display:block;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:1px}
+.row .sc{font-family:var(--f-display);font-size:1.3rem;display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}
+.row.me{border-color:var(--coin);background:linear-gradient(90deg,rgba(255,210,63,.22),rgba(255,210,63,.06))}
+.row.me .nm b{color:var(--coin)}
+.row.fresh{border-color:var(--hot);box-shadow:0 0 0 3px rgba(255,79,139,.3)}
+.row .tag{display:inline-block;font-style:normal;font-weight:600;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;background:var(--hot);color:#fff;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle}
+.empty{margin:30px 0;text-align:center;color:var(--muted);line-height:1.5}
+.card-big{max-height:calc(100% - 24px);overflow-y:auto}
+
+/* Toast */
+#toast{
+  position:absolute;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));
+  transform:translate(-50%,20px);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;
+  background:var(--ink);color:#2a1466;font-weight:600;padding:10px 18px;border-radius:8px;
+  max-width:calc(100% - 32px);text-align:center;z-index:5;
+}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+.top-btns{display:flex;gap:8px}
+#hPU{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.pu{font-family:var(--f-display);font-size:.9rem;letter-spacing:.04em;padding:2px 10px;border-radius:6px;background:var(--c);color:#14081e;transform:skewX(-6deg);text-shadow:none;box-shadow:0 3px 0 rgba(0,0,0,.35)}
+.boss{margin-top:8px}
+.boss .bn2{font-family:var(--f-display);font-size:.95rem;letter-spacing:.06em;color:#ff8a8a;text-shadow:0 2px 0 #1a0b33;margin-bottom:3px;text-transform:uppercase}
+.boss .bar{height:12px;border-radius:7px;background:rgba(10,4,30,.65);border:2px solid #1a0b33;overflow:hidden}
+.boss .bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ff3b3b,#ff9a4a);transition:width .25s}
+#slowfx{position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 50% 55%,rgba(150,110,255,0) 40%,rgba(130,90,255,.5) 100%);transition:opacity .3s}
+.evcard{box-sizing:border-box;position:relative;display:flex;align-items:center;gap:12px;margin:10px auto 0;width:100%;max-width:22em;padding:12px 14px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(255,122,18,.95),rgba(138,43,226,.92));border:2px solid #ffb25a;color:#fff;overflow:hidden;
+  box-shadow:0 0 0 2px rgba(26,11,51,.6),0 8px 26px rgba(255,122,18,.45);animation:evin .6s cubic-bezier(.2,1.2,.3,1) both,evglow 2.2s ease-in-out .6s infinite}
+.evcard::after{content:'';position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-18deg);animation:evsweep 3.4s ease-in-out 1s infinite}
+.evcard.trick{background:linear-gradient(135deg,#ff8a1a,#ff4fa8 55%,#7a2be2)}
+.evcard.trick.live{background:linear-gradient(135deg,#ffb34d,#ff4fa8 60%,#9a3bff)}
+.evcard.candy{background:linear-gradient(135deg,#ff8fd0,#7fd0ff);border-color:#fff;box-shadow:0 0 0 2px rgba(26,11,51,.5),0 8px 26px rgba(255,143,208,.55)}
+.evcard.candy{color:#2a1245}
+.evcard.candy .evt b{text-shadow:none}
+.evcard.candy .evt em{color:#8a1f6a;text-shadow:none}
+.evcard.candy .evt .evtag{background:#2a1245;color:#ffc4ea}
+.evcard.candy.live{color:#fff}
+.evcard.candy.live .evt b{text-shadow:0 2px 0 rgba(26,11,51,.6)}
+.evcard.candy.live .evt em{color:#fff3a8}
+.evcard.candy.live{background:linear-gradient(135deg,#ff6fbd,#59e0c0)}
+.evic{flex:none;display:flex}
+.evcard.live{background:linear-gradient(135deg,#ff9a2a,#ff3b6b);border-color:#ffe08a}
+.evcard.ocean{background:linear-gradient(135deg,#1b78dc,#35e0c0);border-color:#bff3ff;box-shadow:0 0 0 2px rgba(26,11,51,.5),0 8px 26px rgba(53,224,192,.45)}
+.evcard.ocean.live{background:linear-gradient(135deg,#2a9cff,#4af0c8)}
+.evcard.sunny{background:linear-gradient(135deg,#ffb52e,#ff6f5a);border-color:#fff3a8;box-shadow:0 0 0 2px rgba(26,11,51,.5),0 8px 26px rgba(255,181,46,.5)}
+.evcard.sunny.live{background:linear-gradient(135deg,#ffd23f,#ff8a3a)}
+.evcard.frost{background:linear-gradient(135deg,#5ea0ff,#b8e6ff);border-color:#fff;color:#0b2a52;box-shadow:0 0 0 2px rgba(26,11,51,.5),0 8px 26px rgba(120,190,255,.5)}
+.evcard.frost .evt b{text-shadow:none}.evcard.frost .evt em{color:#0b3a8a;text-shadow:none}.evcard.frost .evt .evtag{background:#0b2a52;color:#bfe9ff}
+.evcard.frost.live{background:linear-gradient(135deg,#7fb6ff,#d8f2ff)}
+.evpk{width:46px;height:46px;flex:none;filter:drop-shadow(0 3px 4px rgba(0,0,0,.4));animation:evbob 1.8s ease-in-out infinite}
+.evt{display:flex;flex-direction:column;gap:2px;min-width:0;text-align:left}
+.evt b{font-family:var(--f-display);font-weight:400;font-size:1.2rem;letter-spacing:.03em;text-transform:uppercase;line-height:1.05;text-shadow:0 2px 0 rgba(26,11,51,.7)}
+.evt span{font-size:.78rem;line-height:1.25;font-weight:500;opacity:.95}
+.evt em{font-style:normal;font-family:var(--f-display);font-size:.95rem;letter-spacing:.05em;color:#fff3a8;text-shadow:0 1px 0 rgba(26,11,51,.7)}
+.evt .evtag{align-self:flex-start;background:#1a0b33;color:#ffb25a;font-weight:600;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border-radius:5px;margin-bottom:3px;opacity:1}
+@keyframes evin{from{opacity:0;transform:translateY(14px) scale(.92)}to{opacity:1;transform:none}}
+@keyframes evglow{50%{box-shadow:0 0 0 2px rgba(26,11,51,.6),0 8px 34px rgba(255,150,40,.85)}}
+@keyframes evsweep{0%,55%{left:-60%}100%{left:130%}}
+@keyframes evbob{50%{transform:translateY(-3px) rotate(-5deg)}}
+@media (max-height:700px){.evt span:not(.evtag){display:none}}
+@media (prefers-reduced-motion:reduce){.evcard,.evcard::after,.evpk{animation:none}}
+.best.ev{margin-top:4px;font-size:.8rem;opacity:.9}
+.best.ev.on{color:#ff9a2a;opacity:1;font-weight:600;animation:evpulse 1.6s ease-in-out infinite}
+@keyframes evpulse{50%{text-shadow:0 0 14px rgba(255,140,30,.95)}}
+#spider{position:absolute;left:0;top:0;width:0;height:0;z-index:6;pointer-events:none;will-change:transform}
+#spider svg{position:absolute;left:-36px;top:-36px;width:72px;height:72px;overflow:visible;filter:drop-shadow(0 3px 3px rgba(0,0,0,.5))}
+#spider .lg{transform-origin:0 0;animation:legw .26s ease-in-out infinite alternate}
+#spider .lg.b{animation-delay:-.13s;animation-direction:alternate-reverse}
+#spider.still .lg{animation-play-state:paused}
+@keyframes legw{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}
+@media (prefers-reduced-motion:reduce){
+  .btn,.heart,#toast,.buy,#banner{transition:none}
+  .buy.nope,.baby-tag.warn{animation:none}
+  #spider{display:none}
+}
+</style>
+<style>
+/* standalone app shell: full-bleed canvas, content kept clear of the notch and home bar */
+html,body{margin:0;padding:0;height:100%;color-scheme:dark}
+html{background:#150b33}
+[hidden]{display:none!important}
+body{position:fixed;inset:0;width:100%;touch-action:manipulation;-webkit-touch-callout:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+#hud,#menu,#shop,#board{padding-top:calc(env(safe-area-inset-top,0px) + 12px)}
+#toast{bottom:calc(22px + env(safe-area-inset-bottom,0px))}
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="stage" aria-label="LO’s Burgers game"></canvas>
+  <div id="frost"></div>
+  <div id="flash"></div>
+  <div id="slowfx"></div>
+  <div id="pops"></div>
+  <div id="spider" hidden aria-hidden="true"><svg viewBox="-36 -36 72 72"><g id="spLegs"></g>
+    <ellipse cx="0" cy="9" rx="9" ry="12" fill="#14101c"/><path d="M0 3l3 6-3 6-3-6z" fill="#ff7a12"/>
+    <circle cx="0" cy="-8" r="6.5" fill="#1d1728"/><circle cx="-2.6" cy="-10" r="1.8" fill="#fff"/><circle cx="2.6" cy="-10" r="1.8" fill="#fff"/>
+    <circle cx="-2.6" cy="-10.3" r=".8" fill="#14101c"/><circle cx="2.6" cy="-10.3" r=".8" fill="#14101c"/></svg></div>
+
+  <div id="hud" class="gut" hidden>
+    <div class="hud-row">
+      <div class="chip"><i class="coin"></i><b id="hCoins">0</b></div>
+      <button class="icon-btn" id="pauseBtn" aria-label="Pause">
+        <svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg>
+      </button>
+      <div class="hearts" id="hHearts" role="img" aria-label="Lives"></div>
+    </div>
+    <div class="hud-sub"><span id="hLevel">Level 1</span><span id="hBaby" class="baby-tag" hidden>Sven bonus x2</span><span id="hCombo" class="combo" hidden></span></div>
+    <div id="hPU"></div>
+    <div class="boss" id="hBoss" hidden><div class="bn2">Boss Burger</div><div class="bar"><i id="hBossFill"></i></div></div>
+  </div>
+
+  <div id="banner" aria-live="polite"><div class="bn" id="bnName"></div><div class="bt" id="bnNote"></div></div>
+
+  <section id="menu" class="screen gut">
+    <div class="top-row">
+      <div class="chip" title="Coin bank"><i class="coin"></i><b id="mCoins">0</b></div>
+      <div class="top-btns">
+      <button class="icon-btn" id="hapBtn" aria-label="Vibration on" aria-pressed="true">
+        <svg viewBox="0 0 24 24"><rect x="8" y="4" width="8" height="16" rx="2"/><path d="M4.5 8v8M19.5 8v8"/><path class="slash" d="M17 9l5 6M22 9l-5 6"/></svg>
+      </button>
+      <button class="icon-btn" id="musicBtn" aria-label="Music on" aria-pressed="true">
+        <svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="16" r="2"/><path class="slash" d="M17 9l5 6M22 9l-5 6"/></svg>
+      </button>
+      <button class="icon-btn" id="muteBtn" aria-label="Sound on" aria-pressed="false">
+        <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="waves" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="slash" d="M17 9l5 6M22 9l-5 6"/></svg>
+      </button>
+      </div>
+    </div>
+    <h1 class="logo"><span>LO’s</span><span>Burgers</span></h1>
+    <p class="tagline">Catch burgers through all four seasons. Skip the burnt ones. Winter is cold, icy and mean.</p>
+    <div class="btns">
+      <button class="btn primary big" data-act="play">Play</button>
+      <button class="btn ghost" data-act="shop">Item shop <em class="badge" id="dealBadge">Daily deal</em></button>
+      <button class="btn ghost" data-act="board">Leaderboard</button>
+    </div>
+    <p class="best" id="mBest"></p>
+    <div class="evcard" id="mEvent" hidden role="status">
+      <span id="evIcon" class="evic"><svg class="evpk" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 9c1-4 4-6 7-6" fill="none" stroke="#5fbf3a" stroke-width="4" stroke-linecap="round"/><ellipse cx="24" cy="28" rx="20" ry="16" fill="#ff7a12"/><ellipse cx="14" cy="28" rx="8" ry="15" fill="#ff9a2a" opacity=".55"/><ellipse cx="34" cy="28" rx="8" ry="15" fill="#d95f00" opacity=".45"/><path d="M13 24l6 3-6 3zM35 24l-6 3 6 3zM15 35q9 7 18 0l-3-2-3 2-3-2-3 2-3-2z" fill="#2a0f3a"/></svg></span>
+      <div class="evt"><span class="evtag" id="evTag" hidden>Halloween special</span><b id="evTitle"></b><span id="evSub"></span><em id="evTime"></em></div>
+    </div>
+  </section>
+
+  <section id="pause" class="screen gut" hidden>
+    <div class="card-big">
+      <p class="kicker">Game paused</p>
+      <div class="big-num" style="font-size:3rem">Paused</div>
+      <div class="btns" style="margin:14px 0 0;width:100%">
+        <button class="btn primary" data-act="resume">Resume</button>
+        <button class="btn ghost" data-act="menu">Quit to menu</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="over" class="screen gut" hidden>
+    <div class="card-big">
+      <p class="kicker">Run over</p>
+      <div class="big-num"><i class="coin"></i><span id="oCoins">0</span></div>
+      <p class="newbest" id="oNew" hidden>New best run</p>
+      <dl class="stats">
+        <div><dt>Burgers caught</dt><dd id="oCaught">0</dd></div>
+        <div><dt>Best streak</dt><dd id="oStreak">0</dd></div>
+        <div><dt>Reached</dt><dd id="oLevel">1</dd></div>
+        <div><dt>Coin bank</dt><dd id="oBank">0</dd></div>
+      </dl>
+      <div class="lb-entry" id="lbEntry">
+        <p class="lb-msg" id="lbMsg"></p>
+        <div class="lb-form" id="lbForm">
+          <input id="lbName" type="text" maxlength="14" autocomplete="nickname" autocapitalize="words" enterkeyhint="done" placeholder="Your name" aria-label="Your name">
+          <button class="btn primary" id="lbSave" type="button">Save</button>
+        </div>
+      </div>
+      <div class="btns" style="margin:0;width:100%;gap:10px">
+        <button class="btn primary" data-act="play">Play again</button>
+        <div class="btn-row">
+          <button class="btn ghost" data-act="shop">Shop</button>
+          <button class="btn ghost" data-act="board">Board</button>
+          <button class="btn ghost" data-act="menu">Menu</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="shop" class="screen" hidden>
+    <div class="shop-head gut">
+      <button class="btn ghost small" data-act="back" aria-label="Back">Back</button>
+      <h2 class="shop-title">Item shop</h2>
+      <div class="chip"><i class="coin"></i><b id="sCoins">0</b></div>
+    </div>
+    <p class="deal-line gut" id="dealLine"></p>
+    <div class="list gut" id="shopList"></div>
+  </section>
+
+  <section id="board" class="screen" hidden>
+    <div class="shop-head gut">
+      <button class="btn ghost small" data-act="back" aria-label="Back">Back</button>
+      <h2 class="shop-title">Leaderboard</h2>
+    </div>
+    <div class="tabs gut" id="boardTabs" role="tablist"><button type="button" class="tab on" data-tab="all" role="tab" aria-selected="true">All-time</button><button type="button" class="tab" data-tab="day" role="tab" aria-selected="false">Today</button></div>
+    <p class="board-note gut" id="boardNote">Best runs, by player name. Scores are kept on this device.</p>
+    <ol class="rows gut" id="boardRows"></ol>
+  </section>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+  <input type="checkbox" switch id="hap" tabindex="-1" aria-hidden="true" style="position:fixed;left:-50px;top:0;width:20px;height:20px;opacity:.02;pointer-events:none">
+  <div id="nogl" hidden>This device could not start 3D graphics. Try a recent version of Chrome, Safari or Firefox.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/*@@GAME@@*/
+</script>
+<script>
+document.addEventListener('gesturestart',function(e){e.preventDefault()});
+document.addEventListener('dblclick',function(e){e.preventDefault()});
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){
+  window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});
+}
+</script>
+</body>
+</html>

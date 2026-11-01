@@ -309,6 +309,13 @@ button:focus-visible{outline:3px solid var(--cool);outline-offset:3px}
 .evcard.candy.live{background:linear-gradient(135deg,#ff6fbd,#59e0c0)}
 .evic{flex:none;display:flex}
 .evcard.live{background:linear-gradient(135deg,#ff9a2a,#ff3b6b);border-color:#ffe08a}
+.evcard.ocean{background:linear-gradient(135deg,#1b78dc,#35e0c0);border-color:#bff3ff;box-shadow:0 0 0 2px rgba(26,11,51,.5),0 8px 26px rgba(53,224,192,.45)}
+.evcard.ocean.live{background:linear-gradient(135deg,#2a9cff,#4af0c8)}
+.evcard.sunny{background:linear-gradient(135deg,#ffb52e,#ff6f5a);border-color:#fff3a8;box-shadow:0 0 0 2px rgba(26,11,51,.5),0 8px 26px rgba(255,181,46,.5)}
+.evcard.sunny.live{background:linear-gradient(135deg,#ffd23f,#ff8a3a)}
+.evcard.frost{background:linear-gradient(135deg,#5ea0ff,#b8e6ff);border-color:#fff;color:#0b2a52;box-shadow:0 0 0 2px rgba(26,11,51,.5),0 8px 26px rgba(120,190,255,.5)}
+.evcard.frost .evt b{text-shadow:none}.evcard.frost .evt em{color:#0b3a8a;text-shadow:none}.evcard.frost .evt .evtag{background:#0b2a52;color:#bfe9ff}
+.evcard.frost.live{background:linear-gradient(135deg,#7fb6ff,#d8f2ff)}
 .evpk{width:46px;height:46px;flex:none;filter:drop-shadow(0 3px 4px rgba(0,0,0,.4));animation:evbob 1.8s ease-in-out infinite}
 .evt{display:flex;flex-direction:column;gap:2px;min-width:0;text-align:left}
 .evt b{font-family:var(--f-display);font-weight:400;font-size:1.2rem;letter-spacing:.03em;text-transform:uppercase;line-height:1.05;text-shadow:0 2px 0 rgba(26,11,51,.7)}
@@ -493,28 +500,38 @@ var RAR={
   mythic:{label:'Mythic',color:'#ff4f8b',rgb:'255,79,139'},
   exclusive:{label:'Premium',color:'#ffd23f',rgb:'255,214,64'}
 };
-var SKINS=[
-  {id:'bun',name:'Rookie Bruiser',rarity:'common',price:0,body:'#f2b45a',accent:'#4a2a18',eye:'#fff1b0',acc:'headband',c2:'#e5252f'},
-  {id:'pickle',name:'Pickle Brawler',rarity:'common',price:40,body:'#6fd14f',accent:'#173f16',eye:'#eaff6a',acc:'mohawk',c2:'#ff4f8b'},
-  {id:'ketchup',name:'Ketchup Knight',rarity:'rare',price:100,body:'#ff4a3a',accent:'#4a1010',eye:'#ffe27a',acc:'helmet',c2:'#ffd23f',metal:.35},
-  {id:'ninja',name:'Cheese Ninja',rarity:'rare',price:160,body:'#ffd34a',accent:'#1b1530',eye:'#ff3b3b',acc:'ninja',c2:'#e5252f'},
-  {id:'shades',name:'Shake Shades',rarity:'rare',price:220,body:'#ff6fbd',accent:'#2e1458',eye:'#1a0b33',acc:'shades',c2:'#35e0ff'},
-  {id:'baron',name:'Bacon Berserker',rarity:'epic',price:380,body:'#e0654a',accent:'#34100c',eye:'#ffb347',acc:'horns',c2:'#f5ead0',trail:['#ff9a6b','#ffd23f']},
-  {id:'galaxy',name:'Galaxy Grill',rarity:'epic',price:600,body:'#6b4bff',accent:'#150c58',eye:'#35e0ff',acc:'orbit',c2:'#35e0ff',trail:['#35e0ff','#ff4f8b','#ffffff'],metal:.3},
-  {id:'golden',name:'Golden Patty',rarity:'legendary',price:900,body:'#ffcf33',accent:'#5a3a00',eye:'#fffbe0',acc:'crown',c2:'#ff4f8b',trail:['#ffd23f','#fff3a8'],sparkle:true,metal:.6},
-  {id:'neon',name:'Neon Shake',rarity:'legendary',price:1500,body:'#35e0ff',accent:'#08234a',eye:'#ff4f8b',acc:'halo',c2:'#ff4f8b',cape:'#ff4f8b',trail:['#ff4f8b','#35e0ff'],sparkle:true,metal:.35},
-  {id:'inferno',name:'Inferno Warlord',rarity:'mythic',price:2500,body:'#ff5a1f',accent:'#240808',eye:'#ffe066',acc:'horns',c2:'#ffb347',cape:'#b3150f',trail:['#ff7a1f','#ffd23f','#ff3b1f'],sparkle:true,metal:.3},
-  {id:'frost',name:'Frostbite Emperor',rarity:'mythic',price:4200,body:'#a8e6ff',accent:'#0b2a52',eye:'#ffffff',acc:'crown',c2:'#35e0ff',cape:'#2f8fe8',trail:['#ffffff','#9fe3ff'],sparkle:true,metal:.5},
-  {id:'void',name:'Void Reaper',rarity:'mythic',price:6800,body:'#3a1f7a',accent:'#0a0518',eye:'#ff4fe0',acc:'orbit+halo',c2:'#b04fff',cape:'#5a1fb8',trail:['#b04fff','#ff4fe0','#35e0ff'],sparkle:true,metal:.6},
-  {id:'sovereign',name:'Patty Sovereign',rarity:'mythic',price:10000,body:'#ffe27a',accent:'#4a3200',eye:'#ffffff',acc:'crown+wings',c2:'#fff3a8',cape:'#ff4f8b',trail:['#ffd23f','#fff3a8','#ffffff'],sparkle:true,metal:.9},
-  {id:'logold',name:'Lo Golden Skin',rarity:'exclusive',price:20000,body:'#ffc928',accent:'#8a5a00',eye:'#fffbe0',acc:'crown+coins',c2:'#fff3a8',cape:'#ffc21a',trail:['#ffd23f','#fff3a8','#ffffff'],sparkle:true,metal:.85,gild:true},
-  {id:'stig',name:'Stig',rarity:'epic',price:650,body:'#3f7cff',accent:'#0d1f5a',eye:'#e8f4ff',acc:'cap+headphones',c2:'#ff7a2e'},
-  {id:'elsi',name:'Elsi',rarity:'epic',price:650,body:'#ff8fd0',accent:'#5a2a00',eye:'#fff0fa',acc:'hair+ponytail+bow',c2:'#8a3dff'},
-  {id:'lise',name:'Lise',rarity:'epic',price:650,body:'#b58cff',accent:'#3a1a00',eye:'#fffbe0',acc:'hair+pigtails+bow',c2:'#ffe14a'},
-  {id:'lucas',name:'Lucas',rarity:'legendary',price:1500,body:'#ff6f5a',accent:'#6b4423',eye:'#c8803a',acc:'hair+quiff',c2:'#ffffff'},
-  {id:'ejlert',name:'Ejlert',rarity:'exclusive',price:20000,body:'#7fe9ff',accent:'#2a9fd0',eye:'#ffffff',acc:'hair+spikes+diamonds',c2:'#e6fbff',trail:['#9fe9ff','#ffffff','#c9b8ff'],sparkle:true,metal:.9,gem:true},
-  {id:'copsven',name:'Officer Sven',kind:'baby',rarity:'legendary',price:1800}
-];
+/* Skins come from content/skins.json. The game treats that file as untrusted data:
+   anything outside the allowed colours, parts and price range is cleaned or dropped here. */
+var HEX=/^#[0-9a-fA-F]{6}$/;
+var ACC_OK=['headband','mohawk','helmet','ninja','shades','horns','orbit','crown','halo','wings','hair','quiff','spikes','cap','headphones','ponytail','pigtails','bow','diamonds','coins'];
+function hexOr(v,d){return typeof v==='string'&&HEX.test(v)?v:d}
+function plain(v,n){return String(v).replace(/[<>&"]/g,'').slice(0,n)}
+function numIn(v,a,b,d){return typeof v==='number'&&isFinite(v)?Math.min(b,Math.max(a,v)):d}
+function cleanSkins(list){
+  var out=[],seen={};
+  (Array.isArray(list)?list:[]).forEach(function(s){
+    if(!s||typeof s.id!=='string'||!/^[a-z0-9-]{1,24}$/.test(s.id)||seen[s.id])return;
+    seen[s.id]=1;
+    var rar=RAR[s.rarity]?s.rarity:'common',nm=plain(s.name||s.id,20);
+    if(s.id==='copsven'){out.push({id:'copsven',name:nm,kind:'baby',rarity:rar,price:Math.round(numIn(s.price,40,20000,1800))});return}
+    var o={id:s.id,name:nm,rarity:rar,price:s.id==='bun'?0:Math.round(numIn(s.price,40,20000,500)),
+      body:hexOr(s.body,'#f2b45a'),accent:hexOr(s.accent,'#4a2a18'),eye:hexOr(s.eye,'#ffffff'),c2:hexOr(s.c2,'#ffffff'),
+      acc:String(s.acc||'').split('+').filter(function(a){return ACC_OK.indexOf(a)>=0}).join('+')};
+    if(s.cape)o.cape=hexOr(s.cape,'#ff4f8b');
+    if(Array.isArray(s.trail))o.trail=s.trail.filter(function(h){return HEX.test(h)}).slice(0,3);
+    if(o.trail&&!o.trail.length)delete o.trail;
+    if(typeof s.metal==='number')o.metal=numIn(s.metal,0,1,0);
+    if(s.sparkle===true)o.sparkle=true;
+    if(s.gild===true)o.gild=true;
+    if(s.gem===true)o.gem=true;
+    out.push(o);
+  });
+  var b=out.filter(function(s){return s.id==='bun'})[0];
+  if(!b)b={id:'bun',name:'Rookie Bruiser',rarity:'common',price:0,body:'#f2b45a',accent:'#4a2a18',eye:'#fff1b0',acc:'headband',c2:'#e5252f'};
+  return [b].concat(out.filter(function(s){return s!==b}).slice(0,80));
+}
+var SKINS=cleanSkins([{"id":"bun","name":"Rookie Bruiser","rarity":"common","price":0,"body":"#f2b45a","accent":"#4a2a18","eye":"#fff1b0","acc":"headband","c2":"#e5252f"},{"id":"pickle","name":"Pickle Brawler","rarity":"common","price":40,"body":"#6fd14f","accent":"#173f16","eye":"#eaff6a","acc":"mohawk","c2":"#ff4f8b"},{"id":"ketchup","name":"Ketchup Knight","rarity":"rare","price":100,"body":"#ff4a3a","accent":"#4a1010","eye":"#ffe27a","acc":"helmet","c2":"#ffd23f","metal":0.35},{"id":"ninja","name":"Cheese Ninja","rarity":"rare","price":160,"body":"#ffd34a","accent":"#1b1530","eye":"#ff3b3b","acc":"ninja","c2":"#e5252f"},{"id":"shades","name":"Shake Shades","rarity":"rare","price":220,"body":"#ff6fbd","accent":"#2e1458","eye":"#1a0b33","acc":"shades","c2":"#35e0ff"},{"id":"baron","name":"Bacon Berserker","rarity":"epic","price":380,"body":"#e0654a","accent":"#34100c","eye":"#ffb347","acc":"horns","c2":"#f5ead0","trail":["#ff9a6b","#ffd23f"]},{"id":"galaxy","name":"Galaxy Grill","rarity":"epic","price":600,"body":"#6b4bff","accent":"#150c58","eye":"#35e0ff","acc":"orbit","c2":"#35e0ff","trail":["#35e0ff","#ff4f8b","#ffffff"],"metal":0.3},{"id":"golden","name":"Golden Patty","rarity":"legendary","price":900,"body":"#ffcf33","accent":"#5a3a00","eye":"#fffbe0","acc":"crown","c2":"#ff4f8b","trail":["#ffd23f","#fff3a8"],"sparkle":true,"metal":0.6},{"id":"neon","name":"Neon Shake","rarity":"legendary","price":1500,"body":"#35e0ff","accent":"#08234a","eye":"#ff4f8b","acc":"halo","c2":"#ff4f8b","cape":"#ff4f8b","trail":["#ff4f8b","#35e0ff"],"sparkle":true,"metal":0.35},{"id":"inferno","name":"Inferno Warlord","rarity":"mythic","price":2500,"body":"#ff5a1f","accent":"#240808","eye":"#ffe066","acc":"horns","c2":"#ffb347","cape":"#b3150f","trail":["#ff7a1f","#ffd23f","#ff3b1f"],"sparkle":true,"metal":0.3},{"id":"frost","name":"Frostbite Emperor","rarity":"mythic","price":4200,"body":"#a8e6ff","accent":"#0b2a52","eye":"#ffffff","acc":"crown","c2":"#35e0ff","cape":"#2f8fe8","trail":["#ffffff","#9fe3ff"],"sparkle":true,"metal":0.5},{"id":"void","name":"Void Reaper","rarity":"mythic","price":6800,"body":"#3a1f7a","accent":"#0a0518","eye":"#ff4fe0","acc":"orbit+halo","c2":"#b04fff","cape":"#5a1fb8","trail":["#b04fff","#ff4fe0","#35e0ff"],"sparkle":true,"metal":0.6},{"id":"sovereign","name":"Patty Sovereign","rarity":"mythic","price":10000,"body":"#ffe27a","accent":"#4a3200","eye":"#ffffff","acc":"crown+wings","c2":"#fff3a8","cape":"#ff4f8b","trail":["#ffd23f","#fff3a8","#ffffff"],"sparkle":true,"metal":0.9},{"id":"logold","name":"Lo Golden Skin","rarity":"exclusive","price":20000,"body":"#ffc928","accent":"#8a5a00","eye":"#fffbe0","acc":"crown+coins","c2":"#fff3a8","cape":"#ffc21a","trail":["#ffd23f","#fff3a8","#ffffff"],"sparkle":true,"metal":0.85,"gild":true},{"id":"stig","name":"Stig","rarity":"epic","price":650,"body":"#3f7cff","accent":"#0d1f5a","eye":"#e8f4ff","acc":"cap+headphones","c2":"#ff7a2e"},{"id":"elsi","name":"Elsi","rarity":"epic","price":650,"body":"#ff8fd0","accent":"#5a2a00","eye":"#fff0fa","acc":"hair+ponytail+bow","c2":"#8a3dff"},{"id":"lise","name":"Lise","rarity":"epic","price":650,"body":"#b58cff","accent":"#3a1a00","eye":"#fffbe0","acc":"hair+pigtails+bow","c2":"#ffe14a"},{"id":"lucas","name":"Lucas","rarity":"legendary","price":1500,"body":"#ff6f5a","accent":"#6b4423","eye":"#c8803a","acc":"hair+quiff","c2":"#ffffff"},{"id":"ejlert","name":"Ejlert","rarity":"exclusive","price":20000,"body":"#7fe9ff","accent":"#2a9fd0","eye":"#ffffff","acc":"hair+spikes+diamonds","c2":"#e6fbff","trail":["#9fe9ff","#ffffff","#c9b8ff"],"sparkle":true,"metal":0.9,"gem":true},{"id":"copsven","name":"Officer Sven","kind":"baby","rarity":"legendary","price":1800}]);
+
 function byId(id){for(var i=0;i<SKINS.length;i++)if(SKINS[i].id===id)return SKINS[i];return SKINS[0]}
 
 var KEY='burgerrain.v1';
@@ -547,45 +564,67 @@ function dealLeft(){
 
 /* ---------- seasons ---------- */
 var SEASON_LEN=18;
-var SEASONS=[
-  {name:'Spring',temp:11,color:'#ff9fc9',note:'Light drizzle and a slick lane.',
-   skyTop:'#3f93e0',skyBot:'#ffd6ea',fog:'#ffdced',ground:'#6fbf5c',lane:'#98dd86',hemiSky:'#cfe8ff',hemiGnd:'#6fa05a',hemiI:.78,
-   dir:'#fff1dc',dirI:.95,rim:'#ffb3dd',rimI:.5,mount:'#9aa8d6',foliage:'#ffa6cf',trunk:'#6a4630',cloud:'#ffffff',sun:'#fff0b8',sunY:26,sunS:1,
-   pColor:'#ff9fc9',pFall:1.7,pSway:1.1,pSize:.22,pAlpha:.9,fogNear:60,fogFar:260,laneRough:.7,foliageScale:1,cold:0,
-   w:16,zeta:.9,fall:1,wind:.5,catchM:1,coin:1},
-  {name:'Summer',temp:26,color:'#ffd23f',note:'Hot and calm. Burgers drift down slowly.',
-   skyTop:'#1b78dc',skyBot:'#bfe9ff',fog:'#cdeeff',ground:'#3fa84a',lane:'#69cc58',hemiSky:'#d8f0ff',hemiGnd:'#5a9a48',hemiI:.88,
-   dir:'#fff6d8',dirI:1.15,rim:'#ffe08a',rimI:.4,mount:'#6f9bd0',foliage:'#35b44a',trunk:'#6a4630',cloud:'#ffffff',sun:'#fff4b8',sunY:44,sunS:1.15,
-   pColor:'#fff2a0',pFall:-.5,pSway:.9,pSize:.12,pAlpha:.6,fogNear:70,fogFar:280,laneRough:.8,foliageScale:1.12,cold:0,
-   w:18,zeta:1,fall:.94,wind:0,catchM:1.06,coin:1},
-  {name:'Autumn',temp:8,color:'#ff9a4a',note:'Gusty wind pushes burgers sideways.',
-   skyTop:'#3a2a6a',skyBot:'#ff9a5e',fog:'#ffb98a',ground:'#a8683a',lane:'#d9924f',hemiSky:'#ffd9b0',hemiGnd:'#8a5a3a',hemiI:.72,
-   dir:'#ffc58a',dirI:.95,rim:'#ff7a4a',rimI:.55,mount:'#7a4a6a',foliage:'#ff8a2a',trunk:'#4a3022',cloud:'#ffd9c0',sun:'#ff9a5a',sunY:13,sunS:1.5,
-   pColor:'#ff9a2a',pFall:2.4,pSway:1.5,pSize:.26,pAlpha:.95,fogNear:55,fogFar:240,laneRough:.85,foliageScale:1,cold:.15,
-   w:15,zeta:.95,fall:1.06,wind:1.1,catchM:.97,coin:1},
-  {name:'Winter',temp:-6,color:'#8fd8ff',note:'Icy lane, strong wind, fast burgers. Coins x1.5.',
-   skyTop:'#2b3a63',skyBot:'#c9d9ee',fog:'#d6e2f2',ground:'#eef4fb',lane:'#bfe3fb',hemiSky:'#dbe8ff',hemiGnd:'#9fb4d0',hemiI:.82,
-   dir:'#dfeaff',dirI:.9,rim:'#8ac8ff',rimI:.65,mount:'#c3d2e8',foliage:'#f4f9ff',trunk:'#3a2a22',cloud:'#dfe6f0',sun:'#e6f0ff',sunY:17,sunS:.75,
-   pColor:'#ffffff',pFall:3.4,pSway:.8,pSize:.2,pAlpha:.95,fogNear:36,fogFar:170,laneRough:.08,foliageScale:.78,cold:1,
-   w:8.5,zeta:.45,fall:1.2,wind:1.8,catchM:.88,coin:1.5},
-  {name:'Halloween',temp:9,color:'#ff8a1a',note:'Pumpkin night! Orange burgers and a spooky spider. Purple and green burgers pay extra. Coins x2.',
-   skyTop:'#150a2e',skyBot:'#ff7a1a',fog:'#ff8a3a',ground:'#3d2240',lane:'#4a2a55',hemiSky:'#ff9a5a',hemiGnd:'#3a2048',hemiI:.85,
-   dir:'#ffa24a',dirI:1.05,rim:'#a04aff',rimI:.7,mount:'#5a2a6a',foliage:'#ff8a1a',trunk:'#1a0f14',cloud:'#8a3a6a',sun:'#ffb347',sunY:20,sunS:2.4,
-   pColor:'#ff8a1a',pFall:.9,pSway:1.2,pSize:.2,pAlpha:.85,fogNear:42,fogFar:190,laneRough:.6,foliageScale:1,cold:0,
-   w:17,zeta:1,fall:.95,wind:.4,catchM:1.05,coin:2},
-  {name:'Candy',temp:24,color:'#ff8fd0',note:'Candy afternoon! Sweet pastel burgers and sugar rain. Coins x2.',
-   skyTop:'#9fd8ff',skyBot:'#ffd1f0',fog:'#ffe3f5',ground:'#ffc4e1',lane:'#8fd6c8',hemiSky:'#fff0fb',hemiGnd:'#ffb6d9',hemiI:.95,
-   dir:'#fff4e6',dirI:1.1,rim:'#ff9ad8',rimI:.5,mount:'#c9b3ff',foliage:'#8ff0c6',trunk:'#fff2c2',cloud:'#ffffff',sun:'#fff1a8',sunY:40,sunS:1.3,
-   pColor:'#ffd1f0',pFall:1.4,pSway:.9,pSize:.18,pAlpha:.9,fogNear:70,fogFar:280,laneRough:.5,foliageScale:1.05,cold:0,
-   w:17,zeta:1,fall:.92,wind:.2,catchM:1.06,coin:2},
-  {name:'Trick or Treat',short:'Treats',temp:12,color:'#ffb34d',note:'Candy rain, pumpkins and a spooky spider. Coins x2.',
-   skyTop:'#2a1050',skyBot:'#ff8fd0',fog:'#c86ad0',ground:'#5a2a7a',lane:'#7a3fa8',hemiSky:'#ffb3e6',hemiGnd:'#5a2a7a',hemiI:.9,
-   dir:'#ffd0f0',dirI:1.05,rim:'#ff6fd0',rimI:.65,mount:'#ff9ad0',foliage:'#ff8a1a',trunk:'#3a1a4a',cloud:'#ffc4ea',sun:'#ffd04a',sunY:22,sunS:2,
-   pColor:'#ffb34d',pFall:1.2,pSway:1.1,pSize:.2,pAlpha:.9,fogNear:46,fogFar:200,laneRough:.5,foliageScale:1,cold:0,
-   w:17,zeta:1,fall:.95,wind:.3,catchM:1.05,coin:2}
-];
+/* Looks come from content/themes.json. 'seasons' are the four core seasons (full settings);
+   'themes' are event looks. A theme picks one of the FEELS below, so a theme can change how the
+   world looks but never how the game plays. */
+var FEELS={
+  normal:{w:16,zeta:.9,fall:1,wind:.5,catchM:1},
+  calm:{w:18,zeta:1,fall:.94,wind:0,catchM:1.06},
+  gusty:{w:15,zeta:.95,fall:1.06,wind:1.1,catchM:.97},
+  icy:{w:8.5,zeta:.45,fall:1.2,wind:1.8,catchM:.88},
+  party:{w:17,zeta:1,fall:.95,wind:.3,catchM:1.05}
+};
+var FX_OK=['pumpkins','candies','spider'],BURGERS_OK=['shiny','candy','treat'];
+var MUSIC_IDS=['spring','summer','autumn','winter','halloween','candy','trick'];
+var VIS={hemiI:[0,2,.8],dirI:[0,2,1],rimI:[0,2,.5],sunY:[0,60,26],sunS:[.3,3,1],pFall:[-2,5,1.5],pSway:[0,3,1],pSize:[.05,.6,.2],pAlpha:[0,1,.8],
+  fogNear:[20,120,60],fogFar:[100,400,240],laneRough:[0,1,.7],foliageScale:[.5,1.5,1],cold:[0,1,0]};
+var MECH={w:[4,30],zeta:[.2,1.5],fall:[.5,1.5],wind:[0,2.5],catchM:[.7,1.3],coin:[.5,2]};
 var COLS=['skyTop','skyBot','fog','ground','lane','hemiSky','hemiGnd','dir','rim','mount','foliage','trunk','cloud','sun','pColor'];
 var NUMS=['hemiI','dirI','rimI','sunY','sunS','pFall','pSway','pSize','pAlpha','fogNear','fogFar','laneRough','foliageScale','cold','w','zeta','fall','wind','catchM','coin'];
+function cleanTheme(d,base,core){
+  var o={},k,i;
+  if(base)for(k in base)o[k]=base[k];
+  if(typeof d.name==='string')o.name=plain(d.name,24);
+  if(typeof d.note==='string')o.note=plain(d.note,120);
+  if(typeof d.short==='string')o.short=plain(d.short,12);
+  if(typeof d.temp==='number')o.temp=Math.round(numIn(d.temp,-30,40,10));
+  if(typeof d.color==='string')o.color=hexOr(d.color,o.color||'#ffffff');
+  for(i=0;i<COLS.length;i++){k=COLS[i];if(typeof d[k]==='string')o[k]=hexOr(d[k],o[k]||'#888888')}
+  for(k in VIS)if(typeof d[k]==='number')o[k]=numIn(d[k],VIS[k][0],VIS[k][1],VIS[k][2]);
+  if(core){for(k in MECH)if(typeof d[k]==='number')o[k]=numIn(d[k],MECH[k][0],MECH[k][1],1)}
+  else{
+    /* event themes: play style comes only from a named feel plus an optional coin bonus */
+    var fl=FEELS[d.feel]?d.feel:(FEELS[o.feel]?o.feel:'normal'),f=FEELS[fl];
+    o.feel=fl;for(k in f)o[k]=f[k];
+    o.coin=[1,1.5,2].indexOf(d.coinBonus)>=0?d.coinBonus:1;
+    if(Array.isArray(d.effects))o.fx=d.effects.filter(function(x){return FX_OK.indexOf(x)>=0});
+    if(BURGERS_OK.indexOf(d.burgers)>=0)o.burgers=d.burgers;
+    if(MUSIC_IDS.indexOf(d.music)>=0)o.musicIdx=MUSIC_IDS.indexOf(d.music);
+  }
+  if(!o.fx)o.fx=[];
+  if(!o.burgers)o.burgers='shiny';
+  if(!o.name)o.name='Theme';
+  if(!o.note)o.note='';
+  if(typeof o.temp!=='number')o.temp=10;
+  if(!o.color)o.color='#ffffff';
+  return o;
+}
+var CONTENT_THEMES={"seasons":[{"id":"spring","name":"Spring","temp":11,"color":"#ff9fc9","note":"Light drizzle and a slick lane.","skyTop":"#3f93e0","skyBot":"#ffd6ea","fog":"#ffdced","ground":"#6fbf5c","lane":"#98dd86","hemiSky":"#cfe8ff","hemiGnd":"#6fa05a","hemiI":0.78,"dir":"#fff1dc","dirI":0.95,"rim":"#ffb3dd","rimI":0.5,"mount":"#9aa8d6","foliage":"#ffa6cf","trunk":"#6a4630","cloud":"#ffffff","sun":"#fff0b8","sunY":26,"sunS":1,"pColor":"#ff9fc9","pFall":1.7,"pSway":1.1,"pSize":0.22,"pAlpha":0.9,"fogNear":60,"fogFar":260,"laneRough":0.7,"foliageScale":1,"cold":0,"w":16,"zeta":0.9,"fall":1,"wind":0.5,"catchM":1,"coin":1},{"id":"summer","name":"Summer","temp":26,"color":"#ffd23f","note":"Hot and calm. Burgers drift down slowly.","skyTop":"#1b78dc","skyBot":"#bfe9ff","fog":"#cdeeff","ground":"#3fa84a","lane":"#69cc58","hemiSky":"#d8f0ff","hemiGnd":"#5a9a48","hemiI":0.88,"dir":"#fff6d8","dirI":1.15,"rim":"#ffe08a","rimI":0.4,"mount":"#6f9bd0","foliage":"#35b44a","trunk":"#6a4630","cloud":"#ffffff","sun":"#fff4b8","sunY":44,"sunS":1.15,"pColor":"#fff2a0","pFall":-0.5,"pSway":0.9,"pSize":0.12,"pAlpha":0.6,"fogNear":70,"fogFar":280,"laneRough":0.8,"foliageScale":1.12,"cold":0,"w":18,"zeta":1,"fall":0.94,"wind":0,"catchM":1.06,"coin":1},{"id":"autumn","name":"Autumn","temp":8,"color":"#ff9a4a","note":"Gusty wind pushes burgers sideways.","skyTop":"#3a2a6a","skyBot":"#ff9a5e","fog":"#ffb98a","ground":"#a8683a","lane":"#d9924f","hemiSky":"#ffd9b0","hemiGnd":"#8a5a3a","hemiI":0.72,"dir":"#ffc58a","dirI":0.95,"rim":"#ff7a4a","rimI":0.55,"mount":"#7a4a6a","foliage":"#ff8a2a","trunk":"#4a3022","cloud":"#ffd9c0","sun":"#ff9a5a","sunY":13,"sunS":1.5,"pColor":"#ff9a2a","pFall":2.4,"pSway":1.5,"pSize":0.26,"pAlpha":0.95,"fogNear":55,"fogFar":240,"laneRough":0.85,"foliageScale":1,"cold":0.15,"w":15,"zeta":0.95,"fall":1.06,"wind":1.1,"catchM":0.97,"coin":1},{"id":"winter","name":"Winter","temp":-6,"color":"#8fd8ff","note":"Icy lane, strong wind, fast burgers. Coins x1.5.","skyTop":"#2b3a63","skyBot":"#c9d9ee","fog":"#d6e2f2","ground":"#eef4fb","lane":"#bfe3fb","hemiSky":"#dbe8ff","hemiGnd":"#9fb4d0","hemiI":0.82,"dir":"#dfeaff","dirI":0.9,"rim":"#8ac8ff","rimI":0.65,"mount":"#c3d2e8","foliage":"#f4f9ff","trunk":"#3a2a22","cloud":"#dfe6f0","sun":"#e6f0ff","sunY":17,"sunS":0.75,"pColor":"#ffffff","pFall":3.4,"pSway":0.8,"pSize":0.2,"pAlpha":0.95,"fogNear":36,"fogFar":170,"laneRough":0.08,"foliageScale":0.78,"cold":1,"w":8.5,"zeta":0.45,"fall":1.2,"wind":1.8,"catchM":0.88,"coin":1.5}],"themes":[{"id":"halloween","name":"Halloween","temp":9,"color":"#ff8a1a","note":"Pumpkin night! Orange burgers and a spooky spider. Purple and green burgers pay extra. Coins x2.","skyTop":"#150a2e","skyBot":"#ff7a1a","fog":"#ff8a3a","ground":"#3d2240","lane":"#4a2a55","hemiSky":"#ff9a5a","hemiGnd":"#3a2048","hemiI":0.85,"dir":"#ffa24a","dirI":1.05,"rim":"#a04aff","rimI":0.7,"mount":"#5a2a6a","foliage":"#ff8a1a","trunk":"#1a0f14","cloud":"#8a3a6a","sun":"#ffb347","sunY":20,"sunS":2.4,"pColor":"#ff8a1a","pFall":0.9,"pSway":1.2,"pSize":0.2,"pAlpha":0.85,"fogNear":42,"fogFar":190,"laneRough":0.6,"foliageScale":1,"cold":0,"feel":"party","coinBonus":2,"effects":["pumpkins","spider"],"burgers":"shiny","music":"halloween"},{"id":"candy","name":"Candy","temp":24,"color":"#ff8fd0","note":"Candy afternoon! Sweet pastel burgers and sugar rain. Coins x2.","skyTop":"#9fd8ff","skyBot":"#ffd1f0","fog":"#ffe3f5","ground":"#ffc4e1","lane":"#8fd6c8","hemiSky":"#fff0fb","hemiGnd":"#ffb6d9","hemiI":0.95,"dir":"#fff4e6","dirI":1.1,"rim":"#ff9ad8","rimI":0.5,"mount":"#c9b3ff","foliage":"#8ff0c6","trunk":"#fff2c2","cloud":"#ffffff","sun":"#fff1a8","sunY":40,"sunS":1.3,"pColor":"#ffd1f0","pFall":1.4,"pSway":0.9,"pSize":0.18,"pAlpha":0.9,"fogNear":70,"fogFar":280,"laneRough":0.5,"foliageScale":1.05,"cold":0,"feel":"party","coinBonus":2,"effects":["candies"],"burgers":"candy","music":"candy"},{"id":"trick","name":"Trick or Treat","short":"Treats","temp":12,"color":"#ffb34d","note":"Candy rain, pumpkins and a spooky spider. Coins x2.","skyTop":"#2a1050","skyBot":"#ff8fd0","fog":"#c86ad0","ground":"#5a2a7a","lane":"#7a3fa8","hemiSky":"#ffb3e6","hemiGnd":"#5a2a7a","hemiI":0.9,"dir":"#ffd0f0","dirI":1.05,"rim":"#ff6fd0","rimI":0.65,"mount":"#ff9ad0","foliage":"#ff8a1a","trunk":"#3a1a4a","cloud":"#ffc4ea","sun":"#ffd04a","sunY":22,"sunS":2,"pColor":"#ffb34d","pFall":1.2,"pSway":1.1,"pSize":0.2,"pAlpha":0.9,"fogNear":46,"fogFar":200,"laneRough":0.5,"foliageScale":1,"cold":0,"feel":"party","coinBonus":2,"effects":["pumpkins","candies","spider"],"burgers":"treat","music":"trick"}]};
+var SEASONS=(function(){
+  var out=[],byid={},ids=['spring','summer','autumn','winter'],i,s;
+  for(i=0;i<4;i++){
+    s=cleanTheme((CONTENT_THEMES.seasons||[])[i]||{},i?out[0]:null,true);
+    s.id=ids[i];s.musicIdx=i;out.push(s);byid[s.id]=s;
+  }
+  (CONTENT_THEMES.themes||[]).slice(0,40).forEach(function(d){
+    if(!d||typeof d.id!=='string'||!/^[a-z0-9-]{1,24}$/.test(d.id)||byid[d.id])return;
+    var b=typeof d.extends==='string'&&byid[d.extends]?byid[d.extends]:out[1];
+    s=cleanTheme(d,b,false);s.id=d.id;
+    if(!(MUSIC_IDS.indexOf(d.music)>=0))s.musicIdx=b.musicIdx;
+    out.push(s);byid[s.id]=s;
+  });
+  return out;
+})();
 function mkEnv(d){
   var e={},i;
   for(i=0;i<COLS.length;i++)e[COLS[i]]=new T.Color(d[COLS[i]]);
@@ -593,17 +632,43 @@ function mkEnv(d){
   return e;
 }
 var ENV=SEASONS.map(mkEnv);
-/* timed events on the player's clock. s = season index, h = start hour, len = hours, date = only that day (omit for daily) */
-var EVENTS=[
-  {key:'halloween',s:4,h:19,len:1,name:'Halloween Hour',liveSub:'Pumpkin burgers, purple and green bonus, coins x2',sub:'Pumpkin burgers, a spooky spider and coins x2',pre:15,skip:['2026-10-31']},
-  {key:'trick',s:6,h:21,len:1,date:'2026-10-31',name:'Trick or Treat',liveSub:'Candy rain, pumpkins and coins x2',sub:'Candy rain, pumpkins, a spooky spider and coins x2',pre:0,tag:'Today only'},
-  {key:'candy',s:5,h:14,len:1,date:'2026-10-29',name:'Candy Afternoon',liveSub:'Sweet pastel burgers, sugar rain and coins x2',sub:'Pastel burgers, candy rain and coins x2',pre:0,tag:'Today only'}
-];
-var SPECIAL_DAY='2026-10-28';
+/* timed events come from content/events.json: a theme, a start hour and a length, nothing else */
+var CARDS_OK=['spooky','trick','candy','ocean','sunny','frost'],ICONS_OK=['pumpkin','candy','trick','star','snow','sun','heart'];
+function cleanEvents(list){
+  var out=[],seen={},DT=/^\d{4}-\d\d-\d\d$/;
+  (Array.isArray(list)?list:[]).slice(0,30).forEach(function(e){
+    if(!e||typeof e.key!=='string'||!/^[a-z0-9-]{1,24}$/.test(e.key)||seen[e.key])return;
+    var si=-1,j;for(j=4;j<SEASONS.length;j++)if(SEASONS[j].id===e.theme)si=j;
+    if(si<0)return;
+    seen[e.key]=1;
+    var h=Math.round(numIn(e.h,0,23,19)),len=Math.round(numIn(e.len,1,3,1));if(h+len>24)len=24-h;
+    var o={key:e.key,s:si,h:h,len:len,name:plain(e.name||'Event',24),
+      liveSub:plain(e.liveSub||e.sub||'',80),sub:plain(e.sub||e.liveSub||'',80),
+      pre:Math.round(numIn(e.pre,0,h,0)),card:CARDS_OK.indexOf(e.card)>=0?e.card:'spooky',icon:ICONS_OK.indexOf(e.icon)>=0?e.icon:'star'};
+    if(typeof e.tag==='string'&&e.tag)o.tag=plain(e.tag,20);
+    if(typeof e.date==='string'&&DT.test(e.date))o.date=e.date;
+    if(typeof e.from==='string'&&DT.test(e.from))o.from=e.from;
+    if(typeof e.to==='string'&&DT.test(e.to))o.to=e.to;
+    if(Array.isArray(e.weekdays))o.weekdays=e.weekdays.filter(function(d){return d>=0&&d<=6&&d===Math.floor(d)});
+    if(Array.isArray(e.skip))o.skip=e.skip.filter(function(d){return typeof d==='string'&&DT.test(d)}).slice(0,60);
+    out.push(o);
+  });
+  return out;
+}
+var EVENTS=cleanEvents([{"key":"halloween","theme":"halloween","name":"Halloween Hour","h":19,"len":1,"skip":["2026-10-31"],"pre":15,"sub":"Pumpkin burgers, a spooky spider and coins x2","liveSub":"Pumpkin burgers, purple and green bonus, coins x2","card":"spooky","icon":"pumpkin"},{"key":"trick","theme":"trick","name":"Trick or Treat","h":21,"len":1,"date":"2026-10-31","pre":0,"sub":"Candy rain, pumpkins, a spooky spider and coins x2","liveSub":"Candy rain, pumpkins and coins x2","tag":"Today only","card":"trick","icon":"trick"},{"key":"candy","theme":"candy","name":"Candy Afternoon","h":14,"len":1,"date":"2026-10-29","pre":0,"sub":"Pastel burgers, candy rain and coins x2","liveSub":"Sweet pastel burgers, sugar rain and coins x2","tag":"Today only","card":"candy","icon":"candy"}]);
 function todayKey(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+/* does this event run on this calendar day? */
+function eventDay(e,k,n){
+  if(e.skip&&e.skip.indexOf(k)>=0)return false;
+  if(e.date&&e.date!==k)return false;
+  if(e.from&&k<e.from)return false;
+  if(e.to&&k>e.to)return false;
+  if(e.weekdays&&e.weekdays.length&&e.weekdays.indexOf(n.getDay())<0)return false;
+  return true;
+}
 function eventNow(){
   var n=new Date(),h=n.getHours(),k=todayKey();
-  for(var i=0;i<EVENTS.length;i++){var e=EVENTS[i];if(e.skip&&e.skip.indexOf(k)>=0)continue;if((!e.date||e.date===k)&&h>=e.h&&h<e.h+e.len)return e}
+  for(var i=0;i<EVENTS.length;i++){var e=EVENTS[i];if(eventDay(e,k,n)&&h>=e.h&&h<e.h+e.len)return e}
   return null;
 }
 function eventOn(){return !!eventNow()}
@@ -619,9 +684,7 @@ function eventCard(){
   var n=new Date(),h=n.getHours(),k=todayKey(),best=null;
   for(var i=0;i<EVENTS.length;i++){
     var e=EVENTS[i];
-    if(e.skip&&e.skip.indexOf(k)>=0)continue;
-    if(e.date){if(e.date!==k||h>=e.h)continue}
-    else{var spec=e.key==='halloween'&&k===SPECIAL_DAY;if(!(spec?h<e.h:(h>=e.pre&&h<e.h)))continue}
+    if(!eventDay(e,k,n)||!(h>=e.pre&&h<e.h))continue;
     if(!best||e.h<best.h)best=e;
   }
   return best;
@@ -787,7 +850,7 @@ function musicStep(m,st,t0,sd){
 }
 function musicTick(){
   if(!actx||actx.state!=='running'||!musicOn()||paused||mode==='over'||document.hidden){mus.next=0;return}
-  var m=MUSIC[seasonIdx]||MUSIC[0],now=actx.currentTime;
+  var m=MUSIC[SEASONS[seasonIdx].musicIdx]||MUSIC[0],now=actx.currentTime;
   if(mus.s!==seasonIdx){mus.s=seasonIdx;mus.step=0;mus.next=0}
   mus.bus.gain.setTargetAtTime(mode==='play'?.85:.55,now,.3);
   if(mus.next<now+.02)mus.next=now+.06;
@@ -1447,9 +1510,9 @@ var seedPos=(function(){
   return out;
 })();
 function makeBurger(kind,frost,shiny){
-  var candyEv=!!(evCur&&evCur.s===5),k2=kind;
+  var bst=evCur?SEASONS[evCur.s].burgers:'',candyEv=bst==='candy',k2=kind;
   if(candyEv){if(kind==='blue')k2='cblue';else if(kind==='pink')k2='cpink';else if(kind==='norm'&&shiny)k2='candy'}
-  else if(kind==='norm'&&shiny)k2=evCur&&evCur.s===6?'tt':'shine';
+  else if(kind==='norm'&&shiny)k2=bst==='treat'?'tt':'shine';
   var m=BM[k2],g=new T.Group(),a;
   a=new T.Mesh(BG.bunB,m.bun);a.scale.y=.45;a.position.y=-.16;g.add(a);
   a=new T.Mesh(BG.patty,m.patty);a.position.y=-.09;g.add(a);
@@ -1605,7 +1668,7 @@ function applyEnv(){
     var m=foliageMeshes[i],b=m.userData.base,k=b*cur.foliageScale;
     m.scale.set(k,k*(m.userData.by?1.15:1),k);
   }
-  pumpkins.visible=seasonIdx===4||seasonIdx===6;candies.visible=seasonIdx===5||seasonIdx===6;
+  var fxl=SEASONS[seasonIdx].fx;pumpkins.visible=fxl.indexOf('pumpkins')>=0;candies.visible=fxl.indexOf('candies')>=0;
   if(candies.visible){
     var cdt=Math.min(.05,Math.max(0,t-(applyEnv.lt||t)));applyEnv.lt=t;
     for(var ci=0;ci<candyItems.length;ci++){
@@ -1759,7 +1822,7 @@ function caught(it){
   var v=Math.ceil(({gold:5,blue:4,pink:6}[it.kind]||1)*mult*(baby.on?2:1)*SEASONS[seasonIdx].coin);
   run.coins+=v;
   var spk=it.kind==='gold'||it.kind==='blue'||it.kind==='pink';
-  var cd=evCur&&evCur.s===5;
+  var cd=!!(evCur&&SEASONS[evCur.s].burgers==='candy');
   pop(it.x,it.y+.6,'+'+v,baby.on?'#ff9ad0':(it.kind==='blue'?(cd?'#8fd8ff':'#c48bff'):it.kind==='pink'?(cd?'#ffa0d6':'#8dff6a'):it.kind==='gold'?'#ffd23f':it.shiny?(cd?'#ffb3dd':'#ff9a2a'):'#fff6e3'),spk?32:26);
   burst(it.x,it.y,spk?16:8,it.kind==='blue'?(cd?['#7fd0ff','#e4f5ff','#ffffff']:['#a04aff','#e6ccff','#ffffff']):it.kind==='pink'?(cd?['#ff8fd0','#ffe0f1','#ffffff']:['#6aff3a','#d9ffc4','#ffffff']):it.shiny?(cd?['#ff9ad0','#fff1a8','#8fd8ff']:['#ff8a1a','#ffd04a','#ffffff']):['#ffd23f','#fff3a8','#ffb347']);
   if(spk)sfx.gold();else sfx.coin(run.combo);
@@ -1938,6 +2001,11 @@ function updateHud(){
 var EV_PUMPKIN='<svg class="evpk" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 9c1-4 4-6 7-6" fill="none" stroke="#5fbf3a" stroke-width="4" stroke-linecap="round"/><ellipse cx="24" cy="28" rx="20" ry="16" fill="#ff7a12"/><ellipse cx="14" cy="28" rx="8" ry="15" fill="#ff9a2a" opacity=".55"/><ellipse cx="34" cy="28" rx="8" ry="15" fill="#d95f00" opacity=".45"/><path d="M13 24l6 3-6 3zM35 24l-6 3 6 3zM15 35q9 7 18 0l-3-2-3 2-3-2-3 2-3-2z" fill="#2a0f3a"/></svg>';
 var EV_CANDY='<svg class="evpk" viewBox="0 0 48 48" aria-hidden="true"><path d="M2 14l12 10L2 34z" fill="#ffb3dd"/><path d="M46 14L34 24l12 10z" fill="#ffb3dd"/><circle cx="24" cy="24" r="14" fill="#ff7fc2"/><path d="M14 16c4 2 6 6 6 10s-2 7-4 9M24 11c4 3 6 8 6 13s-2 9-5 13M33 15c-3 3-4 6-4 10s1 7 3 10" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"/></svg>';
 var EV_TRICK='<svg class="evpk" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3L31 19H17z" fill="#fff3d6"/><path d="M17 19H31L37 34H11z" fill="#ff9a2a"/><path d="M11 34H37L43 45H5z" fill="#ffd23f"/></svg>';
+var EV_ICONS={pumpkin:EV_PUMPKIN,candy:EV_CANDY,trick:EV_TRICK,
+  star:'<svg class="evpk" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3l6.5 14 15 1.8-11.2 10.3 3 15L24 36.6 10.7 44l3-15L2.5 18.8l15-1.8z" fill="#ffd23f" stroke="#ff9a2a" stroke-width="2" stroke-linejoin="round"/></svg>',
+  snow:'<svg class="evpk" viewBox="0 0 48 48" aria-hidden="true"><g stroke="#e8f6ff" stroke-width="4" stroke-linecap="round"><path d="M24 4v40M7 14l34 20M41 14L7 34"/></g><circle cx="24" cy="24" r="5" fill="#9fe3ff"/></svg>',
+  sun:'<svg class="evpk" viewBox="0 0 48 48" aria-hidden="true"><g stroke="#ffb52e" stroke-width="4" stroke-linecap="round"><path d="M24 3v7M24 38v7M3 24h7M38 24h7M9 9l5 5M34 34l5 5M39 9l-5 5M14 34l-5 5"/></g><circle cx="24" cy="24" r="11" fill="#ffd23f"/></svg>',
+  heart:'<svg class="evpk" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 42C8 30 4 21 4 15a10 10 0 0 1 20-3 10 10 0 0 1 20 3c0 6-4 15-20 27z" fill="#ff4f8b" stroke="#c4175a" stroke-width="2"/></svg>'};
 function updateMenu(){
   $('#mCoins').textContent=save.coins;
   $('#mBest').textContent=save.best>0?'Best run: '+save.best+' coins':'Your first run is waiting';
@@ -1945,10 +2013,10 @@ function updateMenu(){
   ec.hidden=!ev;
   if(ev){
     var live=evOn&&evCur===ev||(evOn&&evCur&&evCur.key===ev.key);
-    ec.className='evcard'+(live?' live':'')+(ev.key==='candy'?' candy':'')+(ev.key==='trick'?' trick':'');
-    var tag=ev.tag||(ev.key==='halloween'&&todayKey()===SPECIAL_DAY?'Halloween special':'');
+    ec.className='evcard'+(live?' live':'')+(ev.card&&ev.card!=='spooky'?' '+ev.card:'');
+    var tag=ev.tag||'';
     $('#evTag').hidden=!tag;$('#evTag').textContent=tag;
-    $('#evIcon').innerHTML=ev.key==='candy'?EV_CANDY:ev.key==='trick'?EV_TRICK:EV_PUMPKIN;
+    $('#evIcon').innerHTML=EV_ICONS[ev.icon]||EV_ICONS.star;
     $('#evTitle').textContent=live?ev.name+' is live!':ev.name;
     $('#evSub').textContent=live?ev.liveSub:ev.sub;
     $('#evTime').textContent=live?'Ends in '+eventLeft(ev):(ev.h>=18?'Tonight':'Today')+' at '+ev.h+':00 · starts in '+eventIn(ev);
@@ -1985,7 +2053,7 @@ setInterval(function(){if(mode==='menu'&&curScreen==='menu')updateMenu()},20000)
     st.u=0;st.pauseU=.25+Math.random()*.5;st.pause=0;st.speed=95+Math.random()*60;st.amp=18+Math.random()*16;st.on=true;
   }
   window.__spiderStep=function(dt){
-    var show=evOn&&(evCur.s===4||evCur.s===6)&&!paused&&(curScreen==='menu'||curScreen==='play');
+    var show=evOn&&SEASONS[evCur.s].fx.indexOf('spider')>=0&&!paused&&(curScreen==='menu'||curScreen==='play');
     if(!show){if(!el.hidden)el.hidden=true;st.on=false;return}
     if(!st.on){
       st.wait-=dt;
