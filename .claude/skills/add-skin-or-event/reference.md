@@ -61,7 +61,7 @@ Add new looks under `"themes"` (never under `"seasons"`). Start from another loo
  "feel":"calm","coinBonus":1.5,"effects":[],"burgers":"shiny","music":"summer"}
 ```
 
-Look ids to extend: spring, summer, autumn, winter, candy, superburger (or any look added later).
+Look ids to extend: spring, summer, autumn, winter, candy, one-piece (or any look added later).
 
 ### Colour roles
 
