@@ -42,7 +42,7 @@ begin
   if char_length(v_name) < 1 then
     raise exception 'name required';
   end if;
-  if p_score is null or p_score < 1 or p_score > 5000 then
+  if p_score is null or p_score < 1 or p_score > 100000 then
     raise exception 'invalid score';
   end if;
   if p_device is not null and (

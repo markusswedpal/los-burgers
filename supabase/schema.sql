@@ -4,7 +4,7 @@
 create table public.scores (
   id bigint generated always as identity primary key,
   name text not null check (char_length(name) between 1 and 14),
-  score integer not null check (score between 1 and 5000),
+  score integer not null check (score between 1 and 100000),
   season text check (season is null or char_length(season) <= 12),
   device uuid,
   created_at timestamptz not null default now()
@@ -39,7 +39,7 @@ begin
   if char_length(v_name) < 1 then
     raise exception 'name required';
   end if;
-  if p_score is null or p_score < 1 or p_score > 5000 then
+  if p_score is null or p_score < 1 or p_score > 100000 then
     raise exception 'invalid score';
   end if;
   if p_device is not null and (
