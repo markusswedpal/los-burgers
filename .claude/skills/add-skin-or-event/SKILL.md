@@ -49,7 +49,7 @@ a grown-up, write it down as an idea in your final message, and offer something 
 
 Ask: **"What do you want to make?"**
 - A **skin** (a new look for the hero)
-- An **event** (a special time in the game, like Halloween Hour)
+- An **event** (a special time in the game, like Superburger)
 - A **look** for the world (a theme: sky, ground, colours) that an event can use
 - An **event with its own new look** (the child makes the look first, then the event)
 
@@ -69,7 +69,7 @@ Ask: **"What do you want to make?"**
 ## Theme (look) questions
 
 1. **Name and mood.** "What is this world like?" (name 24 characters max)
-2. **Start from which look?** Pick the closest to copy (spring, summer, autumn, winter, halloween, candy, trick). Everything the child does not change is copied from it.
+2. **Start from which look?** Pick the closest to copy (spring, summer, autumn, winter, candy, superburger). Everything the child does not change is copied from it.
 3. **Colours:** top of the sky, sky near the ground, the ground, the path the hero stands on. Then: falling things (snow, petals, bubbles…), leaves, and the sun. Offer matching palettes.
 4. **How it feels to play:** calm, normal, gusty, icy or party. Explain each in one phrase. (This is a fixed menu, you cannot invent new numbers.)
 5. **Extras** (pick any): pumpkins on the ground, candy raining, a spider crawling on screen. And the burger style: shiny gold-orange, pastel candy, or treat.

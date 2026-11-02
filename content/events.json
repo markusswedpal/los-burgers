@@ -1,5 +1,4 @@
 [
-  {"key":"halloween","theme":"halloween","name":"Halloween Hour","h":19,"len":1,"skip":["2026-10-31"],"pre":15,"sub":"Pumpkin burgers, a spooky spider and coins x2","liveSub":"Pumpkin burgers, purple and green bonus, coins x2","card":"spooky","icon":"pumpkin"},
-  {"key":"trick","theme":"trick","name":"Trick or Treat","h":21,"len":1,"date":"2026-10-31","pre":0,"sub":"Candy rain, pumpkins, a spooky spider and coins x2","liveSub":"Candy rain, pumpkins and coins x2","tag":"Today only","card":"trick","icon":"trick"},
+  {"key":"superburger","theme":"superburger","name":"Superburger","h":19,"len":1,"pre":15,"sub":"Rainbow colors, bonus burgers and coins x2","liveSub":"Rainbow colors, bonus burgers and coins x2","card":"candy","icon":"star"},
   {"key":"candy","theme":"candy","name":"Candy Afternoon","h":14,"len":1,"date":"2026-10-29","pre":0,"sub":"Pastel burgers, candy rain and coins x2","liveSub":"Sweet pastel burgers, sugar rain and coins x2","tag":"Today only","card":"candy","icon":"candy"}
 ]

@@ -144,7 +144,7 @@ function updateMenu(){
   mb.setAttribute('aria-label',save.muted?'Sound off':'Sound on');
 }
 setInterval(function(){if(mode==='menu'&&curScreen==='menu')updateMenu()},20000);
-/* spider that crawls across the screen during Halloween Hour */
+/* spider that crawls across the screen (only for themes that use the spider effect) */
 (function(){
   var el=$('#spider'),lg=$('#spLegs'),i,sd,html='';
   for(i=0;i<4;i++){
