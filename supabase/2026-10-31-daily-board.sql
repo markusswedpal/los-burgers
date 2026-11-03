@@ -1,3 +1,4 @@
+-- APPLIED to the live project on 2026-11-03 (everything above the clear statement).
 -- Daily top-10 board + top-100 all-time board for LO's Burgers.
 -- Run in the Supabase SQL editor (project pvvgkrbxsaqngekxqlki), then run the clear statement at the bottom once.
 
