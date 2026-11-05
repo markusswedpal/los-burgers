@@ -1,4 +1,7 @@
 [
   {"key":"one-piece","theme":"one-piece","name":"One-Piece Event","h":19,"len":1,"pre":15,"sub":"Rainbow colors, bonus burgers and coins x2","liveSub":"Rainbow colors, bonus burgers and coins x2","card":"candy","icon":"star"},
-  {"key":"candy","theme":"candy","name":"Candy Afternoon","h":14,"len":1,"date":"2026-10-29","pre":0,"sub":"Pastel burgers, candy rain and coins x2","liveSub":"Sweet pastel burgers, sugar rain and coins x2","tag":"Today only","card":"candy","icon":"candy"}
+  {"key":"candy","theme":"candy","name":"Candy Afternoon","h":14,"len":1,"date":"2026-10-29","pre":0,"sub":"Pastel burgers, candy rain and coins x2","liveSub":"Sweet pastel burgers, sugar rain and coins x2","tag":"Today only","card":"candy","icon":"candy"},
+  {"key":"strawberry","theme":"strawberry","name":"Strawberry Event","h":16,"len":1,"date":"2026-11-06","pre":8,"sub":"Burgers turn into strawberries. Coins x2","liveSub":"Strawberries are falling! Coins x2","card":"berry","icon":"strawberry"},
+  {"key":"pirate","theme":"pirate","name":"Pirate Event","h":16,"len":1,"date":"2026-11-07","pre":8,"sub":"Burgers turn into treasure chests. Coins x2","liveSub":"Ahoy! Treasure chests are falling! Coins x2","card":"pirate","icon":"chest"},
+  {"key":"football","theme":"football","name":"Football Event","h":16,"len":1,"date":"2026-11-08","pre":8,"sub":"Burgers turn into footballs. Coins x2","liveSub":"Goal! Footballs are falling! Coins x2","card":"pitch","icon":"ball"}
 ]

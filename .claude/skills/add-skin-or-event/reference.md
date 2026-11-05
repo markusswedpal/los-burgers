@@ -79,7 +79,7 @@ Number fields you may change (all optional, with their allowed range): `sunY` 0-
 - `feel` (how the lane and wind behave): `normal`, `calm` (slow burgers, no wind), `gusty` (wind), `icy` (slippery and fast), `party` (the event feel)
 - `coinBonus`: 1, 1.5 or 2
 - `effects`: any of `pumpkins`, `candies`, `spider`
-- `burgers`: `shiny` (gold-orange), `candy` (pastel), `treat` (orange and pink)
+- `burgers` (what the falling burgers look like): `shiny` (gold-orange), `candy` (pastel), `treat` (orange and pink), `strawberry` (strawberries), `pirate` (treasure chests), `football` (footballs)
 - `music`: spring, summer, autumn, winter, halloween, candy, trick
 - `temp`: -30 to 40 (shown on screen only)
 - `name` up to 24 characters, `note` up to 120, `short` up to 12 (leaderboard label)
@@ -102,8 +102,8 @@ Number fields you may change (all optional, with their allowed range): `sunY` 0-
 | `sub` | line on the card before it starts (80 characters) |
 | `liveSub` | line while it is on (80 characters) |
 | `tag` | optional small label, 20 characters, like "Today only" |
-| `card` | spooky, trick, candy, ocean, sunny, frost |
-| `icon` | pumpkin, candy, trick, star, snow, sun, heart |
+| `card` | spooky, trick, candy, ocean, sunny, frost, berry, pirate, pitch |
+| `icon` | pumpkin, candy, trick, star, snow, sun, heart, strawberry, chest, ball |
 
 Two events may not be on at the same time. During an event all burgers are shiny, blue and pink burgers
 appear, and the coin bonus of the look applies. That part is fixed game behaviour.
@@ -111,4 +111,4 @@ appear, and the coin bonus of the look applies. That part is fixed game behaviou
 ## What a child cannot change (grown-up jobs)
 
 Speed, gravity, lives, scoring, burger types, controls, boss, power-ups, leaderboard, prices of existing
-skins, new body parts or shapes, new weather, new music tracks, new card styles or icons.
+skins, new body parts or shapes, new weather, new music tracks, new card styles or icons, new burger looks (like the strawberry, chest and football in `src/render/themed.js`).

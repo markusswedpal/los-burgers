@@ -95,7 +95,7 @@ def event_css():
 def icons():
     s = rd('src/ui/screens.js')
     found = dict((m.group(1).lower(), m.group(2)) for m in re.finditer(r"var EV_(PUMPKIN|CANDY|TRICK)='(.*?)';\n", s))
-    for m in re.finditer(r"\n  (star|snow|sun|heart):'(<svg.*?</svg>)'", s):
+    for m in re.finditer(r"\n  (star|snow|sun|heart|strawberry|chest|ball):'(<svg.*?</svg>)'", s):
         found[m.group(1)] = m.group(2)
     return found
 

@@ -339,6 +339,7 @@ var seedPos=(function(){
 })();
 function makeBurger(kind,frost,shiny){
   var bst=evCur?SEASONS[evCur.s].burgers:'',candyEv=bst==='candy',k2=kind;
+  if(TH_LOOK[bst])return makeThemedBurger(bst,kind,frost,shiny);
   if(candyEv){if(kind==='blue')k2='cblue';else if(kind==='pink')k2='cpink';else if(kind==='norm'&&shiny)k2='candy'}
   else if(kind==='norm'&&shiny)k2=bst==='treat'?'tt':'shine';
   var m=BM[k2],g=new T.Group(),a;

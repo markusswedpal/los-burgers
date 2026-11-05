@@ -10,7 +10,7 @@ var FEELS={
   icy:{w:8.5,zeta:.45,fall:1.2,wind:1.8,catchM:.88},
   party:{w:17,zeta:1,fall:.95,wind:.3,catchM:1.05}
 };
-var FX_OK=['pumpkins','candies','spider'],BURGERS_OK=['shiny','candy','treat'];
+var FX_OK=['pumpkins','candies','spider'],BURGERS_OK=['shiny','candy','treat','strawberry','pirate','football'];
 var MUSIC_IDS=['spring','summer','autumn','winter','halloween','candy','trick'];
 var VIS={hemiI:[0,2,.8],dirI:[0,2,1],rimI:[0,2,.5],sunY:[0,60,26],sunS:[.3,3,1],pFall:[-2,5,1.5],pSway:[0,3,1],pSize:[.05,.6,.2],pAlpha:[0,1,.8],
   fogNear:[20,120,60],fogFar:[100,400,240],laneRough:[0,1,.7],foliageScale:[.5,1.5,1],cold:[0,1,0]};
@@ -69,7 +69,7 @@ function mkEnv(d){
 }
 var ENV=SEASONS.map(mkEnv);
 /* timed events come from content/events.json: a theme, a start hour and a length, nothing else */
-var CARDS_OK=['spooky','trick','candy','ocean','sunny','frost'],ICONS_OK=['pumpkin','candy','trick','star','snow','sun','heart'];
+var CARDS_OK=['spooky','trick','candy','ocean','sunny','frost','berry','pirate','pitch'],ICONS_OK=['pumpkin','candy','trick','star','snow','sun','heart','strawberry','chest','ball'];
 function cleanEvents(list){
   var out=[],seen={},DT=/^\d{4}-\d\d-\d\d$/;
   (Array.isArray(list)?list:[]).slice(0,30).forEach(function(e){

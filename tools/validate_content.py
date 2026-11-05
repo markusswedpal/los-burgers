@@ -29,10 +29,10 @@ SKIN_COLORS = ['body', 'accent', 'eye', 'c2']
 
 FEELS = ['normal', 'calm', 'gusty', 'icy', 'party']
 FX = ['pumpkins', 'candies', 'spider']
-BURGERS = ['shiny', 'candy', 'treat']
+BURGERS = ['shiny', 'candy', 'treat', 'strawberry', 'pirate', 'football']
 MUSIC = ['spring', 'summer', 'autumn', 'winter', 'halloween', 'candy', 'trick']
-CARDS = ['spooky', 'trick', 'candy', 'ocean', 'sunny', 'frost']
-ICONS = ['pumpkin', 'candy', 'trick', 'star', 'snow', 'sun', 'heart']
+CARDS = ['spooky', 'trick', 'candy', 'ocean', 'sunny', 'frost', 'berry', 'pirate', 'pitch']
+ICONS = ['pumpkin', 'candy', 'trick', 'star', 'snow', 'sun', 'heart', 'strawberry', 'chest', 'ball']
 THEME_COLORS = ['color', 'skyTop', 'skyBot', 'fog', 'ground', 'lane', 'hemiSky', 'hemiGnd', 'dir', 'rim', 'mount',
                 'foliage', 'trunk', 'cloud', 'sun', 'pColor']
 THEME_NUMS = {'hemiI': (0, 2), 'dirI': (0, 2), 'rimI': (0, 2), 'sunY': (0, 60), 'sunS': (.3, 3), 'pFall': (-2, 5),

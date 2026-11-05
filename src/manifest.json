@@ -7,6 +7,7 @@
  "game/audio.js",
  "render/world.js",
  "render/models.js",
+ "render/themed.js",
  "game/state.js",
  "render/env.js",
  "ui/pops.js",
