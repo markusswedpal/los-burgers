@@ -18,5 +18,6 @@
 {"id":"lise","name":"Lise","rarity":"epic","price":650,"body":"#b58cff","accent":"#3a1a00","eye":"#fffbe0","acc":"hair+pigtails+bow","c2":"#ffe14a"},
 {"id":"lucas","name":"Lucas","rarity":"legendary","price":1500,"body":"#ff6f5a","accent":"#6b4423","eye":"#c8803a","acc":"hair+quiff","c2":"#ffffff"},
 {"id":"ejlert","name":"Ejlert","rarity":"exclusive","price":20000,"body":"#7fe9ff","accent":"#2a9fd0","eye":"#ffffff","acc":"hair+spikes+diamonds","c2":"#e6fbff","trail":["#9fe9ff","#ffffff","#c9b8ff"],"sparkle":true,"metal":0.9,"gem":true},
-{"id":"copsven","name":"Officer Sven","kind":"baby","rarity":"legendary","price":1800}
+{"id":"copsven","name":"Officer Sven","kind":"baby","rarity":"legendary","price":1800},
+{"id":"markus","name":"Markus","rarity":"epic","price":1000,"body":"#8b5cf6","accent":"#1e2a5a","eye":"#ffffff","c2":"#ffe66d","acc":"shades+orbit+diamonds","trail":["#ffffff"],"sparkle":false,"metal":0}
 ]
